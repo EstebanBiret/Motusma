@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nan Nan</title>
+        <link rel="stylesheet" href="styles.css">
+        <script src="./pokemon.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link rel="icon" href="images/motisma.png" type="image/x-icon">
+    </head>
+    <body>
+
+      <main class="main" id="main">
+        <header class="header home">
+          <div class="container">
+            <div class="logo-wrapper">
+              <img src="./images/pokeball.svg" alt="pokeball" />
+              <h1>Pokedex</h1>
+              <div id="close-pokedex" onclick="closePokedex()">X</div>
+            </div>
+          </div>
+        </header>
+        <section class="pokemon-list">
+          <div class="container">
+            <div class="list-wrapper"></div>
+          </div>
+        </section>
+      </main>
+
+      <div id="page-content">
+        <img src="images/logo.png" id="logo" alt="Logo" width="500px" style="margin-top: 20px;">
+
+        <div id="bar">
+          <div id="nan">
+            <img src="images/pokedex.png" id="img-open" alt="pokedex" onclick="openPokedex()">
+            <img src="images/stats.png" id="img-stats" alt="stats" onclick="openStats()">
+            <img src="images/info.png" id="img-infos" alt="infos" onclick="openInfos()">
+          </div>
+          <img src="images/pokeball.png" id="pokeball" alt="Pokeball" width="100px" class="disabled" onclick="openResults()">
+          <img src="images/no-music.svg" id="music" alt="no-music" width="70px" onclick="toggleMusic()">
+          <div id="theme">
+            <input type="checkbox" id="hide-checkbox">
+            <label for="hide-checkbox" class="toggle">
+              <span class="toggle-button">
+                <span class="crater crater-1"></span>
+                <span class="crater crater-2"></span>
+                <span class="crater crater-3"></span>   
+                <span class="crater crater-4"></span>
+                <span class="crater crater-5"></span>
+                <span class="crater crater-6"></span>
+                <span class="crater crater-7"></span>
+              </span>
+              <span class="star star-1"></span>
+              <span class="star star-2"></span>
+              <span class="star star-3"></span>
+              <span class="star star-4"></span>
+              <span class="star star-5"></span>
+              <span class="star star-6"></span>
+              <span class="star star-7"></span>
+              <span class="star star-8"></span>
+            </label>
+          </div>
+        </div>
+
+        <div id="infos_overlay" class="overlay"></div>
+        <div id="infos">
+          <div id="close-infos" onclick="closeInfos()">X</div>
+          <div class="infos-title">Bienvenue dans Motusma !</div>
+          <div id="infos-title-content">
+            Chaque jour, un nouveau Pokémon fait son apparition, à toi de le trouver. Sont uniquement présents les Pokémons de la 1ère génération.
+            Les lettres bien placées sont en <strong>rouge</strong>, les lettres correctes mais mal placées sont en <strong>jaune</strong>, et les lettres incorrectes sont transparentes.<br><br>
+            <strong>NB : </strong>Les pokémons Nidoran♂ et Nidoran♀ s'appellent respectivement <strong>Nidoranm</strong> et <strong>Nidoranf</strong>, pour des soucis de caractères spéciaux. <br><br>
+          </div>
+          <div class="infos-title">Fonctionnalités :</div>
+          <div id="infos-features-content">
+            <strong>Statistiques : </strong> Graphique montrant les pokémons trouvés en fonction du nombre d'essais, modifier son pseudo. <br><br>
+            <strong>Pokédex : </strong> Le Pokédex recense tous les Pokémons trouvés ou capturés du joueur. Possibilité de voir les informations détaillées des Pokémons, comme leurs statistiques, les dates où le joueur les a rencontrés ou capturés, leurs types ... <br><br>
+            <strong>Résultat : </strong> Consultation et partage du résultat du jour, compte à rebours pour le prochain Pokémon.<br><br>
+
+          </div>
+          <div class="infos-title">Crédits :</div>
+          <div id="infos-credits-content">
+            <a href="https://pokedle.net" class="links" target="_blank">pokedle.net</a>, <a href="https://surtom.yvelin.net/" class="links" target="_blank">UneSo6</a>, <a href="http://departementdle.ouipouet.tech/" class="links" target="_blank">BeaufBourguignon</a>.
+          </div>
+        </div>
+
+        <div id="stats_overlay" class="overlay"></div>
+        <div id="stats">
+          <div id="close-stats" onclick="closeStats()">X</div>
+
+          <div id="pseudo-container">
+            Pseudo : <p id="pseudo"></p>
+            <button id="changer-pseudo" onclick="openPseudo()">Changer de pseudo</button>
+          </div>
+
+          <div id="date-container">
+            Début de l'aventure : Le <p id="debut-aventure">-</p>
+          </div>
+
+          <div id="container-found-catch">
+            <div id="found">Pokémons vus : <span>0</span></div>
+            <div id="catch">Pokémons attrapés : <span>0</span></div>
+          </div>
+
+          <div id="chart">
+            <canvas id="essaisChart" width="800" height="400"></canvas>
+          </div>
+        </div>
+
+        <div id="pseudo_overlay" class="overlay"></div>
+        <div id="form-changer-pseudo" style="display: none;">
+          <div id="close-pseudo" onClick="closePseudo()">X</div>
+          <form onsubmit="newPseudo(event)" id="input-change-pseudo">
+              <input type="text" id="pseudo-input" value="" maxlength="20">
+              <button type="submit">Valider</button>
+          </form>
+        </div>
+      
+        <div id="results_overlay" class="overlay"></div>
+        <div id="results" style="display: none;">
+            <div id="close-results" onclick="closeResults()">X</div>
+            <h1 id="results-titre">C'est métaphysique</h1>
+            <div id="results-text">Filou !</div>
+            <img src="" alt="Pokémon du jour" id="results-pokemon">
+
+            <div id="share" onclick="share()">Copier le résultat
+              <img src="images/copy.svg" alt="copy" width="40px">
+            </div>
+            
+            <div id="next" style="margin-bottom: 30px; font-size: 20px;">
+              <strong>Prochain Pokémon dans  :</strong>
+            </div>
+            <div class="col">
+              <div>
+                  <input type="text" readonly value="0">
+                  <br/>
+                  <label for="">Heures</label>
+              </div>
+              <div>
+                  <input type="text" readonly value="0">
+                  <br/>
+                  <label for="">Minutes</label>
+              </div>
+              <div>
+                  <input type="text" readonly value="0">
+                  <br/>
+                  <label for="">Secondes</label>
+              </div>
+            </div>
+
+            <div id="results-buttons">
+                <button id="pokedex_after_game" onclick="openPokedex()">Pokédex</button>
+                <button id="stats_after_game" onclick="openStats()">Statistiques</button>
+            </div>
+        </div>
+
+        <div class="containerGrid">
+            <table id="word-grid"></table>
+        </div>
+
+        <div id="text-box"><p>Ce mot n'existe pas, dresseur !</p></div>
+
+      </div>
+      
+        <script src="motsValides.js"></script>
+        <script src="script.js"></script>
+        <script src="countdown.js"></script>
+        <script src="chart.js"></script>
+    </body>
+</html>
