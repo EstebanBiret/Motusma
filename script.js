@@ -548,13 +548,13 @@ toggleButton.addEventListener('change', function() {
     const tds = document.querySelectorAll('td');
 
     tds.forEach(td => {
-        if (localStorage.getItem("theme") === "light") {
-            td.style.color = 'white'; 
-            td.style.boxShadow = 'inset 0 0 0 3px white';
-
-        } else {
+        if (localStorage.getItem("theme") === "dark") {
             td.style.color = 'black';
             td.style.boxShadow ='inset 0 0 0 3px black';
+
+        } else {
+            td.style.color = 'white'; 
+            td.style.boxShadow = 'inset 0 0 0 3px white';
         }
     });
 
