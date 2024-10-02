@@ -76,7 +76,7 @@ function toggleMusic() {
 }
 
 function showTextBox() {
-    playSound("wrong", "mp3");
+    //playSound("wrong", "mp3");
     textBox.style.visibility = "visible";
     textBox.style.bottom = "20px";
 
@@ -128,7 +128,7 @@ function updateGridWithGuess(del, key) {
 
     if (del) {
         if (currentPosition !== 0) {
-            playSound('back', 'mp3');
+            //playSound('back', 'mp3');
             currentPosition--;
             index--;
         }
@@ -139,7 +139,7 @@ function updateGridWithGuess(del, key) {
     if (key && /^[a-zA-Z]$/.test(key)) {
         cell.textContent = key.toUpperCase();        
         currentPosition++;
-        playSound('letter', 'wav');
+        //playSound('letter', 'wav');
     } else {
         cell.textContent = '';
         cell.style.backgroundColor = 'transparent';
@@ -176,7 +176,7 @@ function checkGuess() {
         return;
     }
 
-    playSound('guess', 'mp3');
+    //playSound('guess', 'mp3');
 
     //on met à jour les essais
     let todayTriesCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith("today_tries="));
