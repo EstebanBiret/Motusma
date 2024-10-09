@@ -72,15 +72,6 @@ button {
   margin-left: 60px;
 }
 
-#infos-container {
-  position: absolute;
-  left: 40px;
-  top: 40px;  
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
-
 #img-open, #img-stats, #img-infos {
   width: 100px;
   cursor: pointer;
