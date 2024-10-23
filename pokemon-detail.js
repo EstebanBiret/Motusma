@@ -360,7 +360,8 @@ function displayPokemonDetails(pokemon) {
     ).textContent = `#${String(id).padStart(3, "0")}`;
 
     const imageElement = document.querySelector(".detail-img-wrapper img");
-    imageElement.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`;
+    //imageElement.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`;
+    imageElement.src = `sprites/${id}.svg`;
     imageElement.alt = capitalizePokemonName;
 
     const typeWrapper = document.querySelector(".power-wrapper");

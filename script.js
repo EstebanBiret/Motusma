@@ -411,7 +411,8 @@ function win(pokemonName) {
     document.getElementById("results-titre").textContent = "Nom de Zeus !";
     document.getElementById("results-text").textContent = "Tu as trouvé " + majFirstLetter(atob(getCookie("pokemon_du_jour"))) + " en " + getCookie("nb_tries") + " essai.s.";
     openResults();
-    results_pokemon.src = `https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/dream-world/${pkmn_id}.svg`;
+    //results_pokemon.src = `https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/dream-world/${pkmn_id}.svg`;
+    results_pokemon.src = `/sprites/${pkmn_id}.svg`;
 }
 
 function lose(pokemonName) {
@@ -421,7 +422,8 @@ function lose(pokemonName) {
     document.getElementById("results-titre").textContent = "Nom d'une pipe en bois !";
     document.getElementById("results-text").textContent = "Le pokémon du jour était  " + majFirstLetter(atob(getCookie("pokemon_du_jour"))) + ".";
     openResults();
-    results_pokemon.src = `https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/dream-world/${pkmn_id}.svg`;
+    //results_pokemon.src = `https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/dream-world/${pkmn_id}.svg`;
+    results_pokemon.src = `/sprites/${pkmn_id}.svg`;
 }
 
 // Fonction pour gérer l'événement de la touche enfoncée
@@ -688,7 +690,8 @@ async function displayResultsComeBack() {
         }
         pokeball.classList.remove('disabled');
         pokemonID = getPokemonIdByName(atob(getCookie("pokemon_du_jour")));
-        results_pokemon.src = `https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/dream-world/${pokemonID}.svg`;
+        //results_pokemon.src = `https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/dream-world/${pokemonID}.svg`;
+        results_pokemon.src = `/sprites/${pokemonID}.svg`;
         results.style.display="";
     }
 }
