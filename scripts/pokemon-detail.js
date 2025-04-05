@@ -337,7 +337,7 @@ function createAndAppendElement(parent, tag, options = {}) {
 
 function displayPokemonDetails(pokemon) {
 
-  let userData = JSON.parse(localStorage.getItem('user_data'));
+  let userData = JSON.parse(localStorage.getItem("motusma-data"));
   let encountered = null;
 
   if(userData){

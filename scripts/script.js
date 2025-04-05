@@ -53,7 +53,7 @@ function majFirstLetter(string) {
 function toggleMusic() {
     if (isMusicPlaying) {
         bg_music.volume = 0;
-        if(localStorage.getItem("theme") === "dark") {
+        if(localStorage.getItem("motusma-theme") === "dark") {
             music.src = 'images/no-music-white.svg';
         }
         else {
@@ -65,7 +65,7 @@ function toggleMusic() {
             bg_music.play()
         }
         bg_music.volume = 1;
-        if(localStorage.getItem("theme") === "dark") {
+        if(localStorage.getItem("motusma-theme") === "dark") {
             music.src = 'images/music-white.svg';
         }
         else {
@@ -163,7 +163,7 @@ function checkGuess() {
     let allLettersCorrect = true;
     let guessedWord = '';
     
-    if(atob(getCookie("finish_today")) == "true") {
+    if(atob(getCookie("motusma-finish-today")) == "true") {
         return;
     }
 
@@ -176,16 +176,14 @@ function checkGuess() {
         return;
     }
 
-    //playSound('guess', 'mp3');
-
     //on met à jour les essais
-    let todayTriesCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith("today_tries="));
+    let todayTriesCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith("motusma-today-tries="));
     const todayTries = JSON.parse(decodeURIComponent(todayTriesCookie.split('=')[1]));
     const currentRowArray = todayTries[currentRow];
     for (let i = 0; i < guessedWord.length; i++) {
         currentRowArray.push(guessedWord[i]);
     }
-    document.cookie = `today_tries=${JSON.stringify(todayTries)}; expires=${tomorrow.toUTCString()}; path=/`;
+    document.cookie = `motusma-today-tries=${JSON.stringify(todayTries)}; expires=${tomorrow.toUTCString()}; path=/`;
 
     //pour lettre jaune
     const targetLetterCounts = {};
@@ -223,30 +221,35 @@ function checkGuess() {
     //VICTOIRE
     if (allLettersCorrect && currentRowCells.length === targetPokemon.length) {
 
-        document.cookie = `${"nb_tries="}${nb_tries}; expires=${tomorrow.toUTCString()}; path=/`;
+        document.cookie = `${"motusma-nb-tries="}${nb_tries}; expires=${tomorrow.toUTCString()}; path=/`;
         win(targetPokemon);
 
-        updateFinishTodayCookie("finish_today", btoa("true"));
+        updateFinishTodayCookie("motusma-finish-today", btoa("true"));
 
-        let pkmn_found = parseInt(localStorage.getItem("found"), 10) || 0;
+        let pkmn_found = parseInt(localStorage.getItem("motusma-found"), 10) || 0;
         pkmn_found++;
-        localStorage.setItem("found", pkmn_found);
+        localStorage.setItem("motusma-found", pkmn_found);
 
-        let pkmn_catch = parseInt(localStorage.getItem("catch"), 10) || 0;
+        let pkmn_catch = parseInt(localStorage.getItem("motusma-catch"), 10) || 0;
         pkmn_catch++;
-        localStorage.setItem("catch", pkmn_catch);
+        localStorage.setItem("motusma-catch", pkmn_catch);
 
-
-        //fetch data to refresh pokedex (nan nan)
+        //on maj le pokédex
         fetch(`https://pokeapi.co/api/v2/pokemon?limit=${MAX_POKEMON}`)
         .then((response) => response.json())
         .then((data) => {
             allPokemons = data.results;
             displayPokemons(allPokemons);
         });
-        disableKeydownListener();
 
+        //on maj les stats
+        spanFound.textContent = localStorage.getItem("motusma-found") + "/151";
+        spanCatch.textContent = localStorage.getItem("motusma-catch") + "/151";
+
+        //on désactive l'écouteur de touches, on maj les données utilisateur et le graphique des stats
+        disableKeydownListener();
         updateUserData(true, getPokemonIdByName(targetPokemon), nb_tries);
+        updateEssaisChart();
 
         return;
     }
@@ -254,25 +257,31 @@ function checkGuess() {
     //DÉFAITE
     if(currentRow + 1 >= 5) {
         
-        document.cookie = `${"nb_tries="}${6}; expires=${tomorrow.toUTCString()}; path=/`;
+        document.cookie = `${"motusma-nb-tries="}${6}; expires=${tomorrow.toUTCString()}; path=/`;
         lose(targetPokemon);
 
-        updateFinishTodayCookie("finish_today", btoa("true"));
+        updateFinishTodayCookie("motusma-finish-today", btoa("true"));
 
-        let pkmn_found = parseInt(localStorage.getItem("found"), 10) || 0;
+        let pkmn_found = parseInt(localStorage.getItem("motusma-found"), 10) || 0;
         pkmn_found++;
-        localStorage.setItem("found", pkmn_found);
+        localStorage.setItem("motusma-found", pkmn_found);
 
-        //fetch data to refresh pokedex (nan nan)
+        //on maj le pokédex
         fetch(`https://pokeapi.co/api/v2/pokemon?limit=${MAX_POKEMON}`)
         .then((response) => response.json())
         .then((data) => {
             allPokemons = data.results;
             displayPokemons(allPokemons);
         });
-        disableKeydownListener();
 
+        //on maj les stats
+        spanFound.textContent = localStorage.getItem("motusma-found") + "/151";
+        spanCatch.textContent = localStorage.getItem("motusma-catch") + "/151";
+
+        //on désactive l'écouteur de touches, on maj les données utilisateur et le graphique des stats
+        disableKeydownListener();
         updateUserData(false, getPokemonIdByName(targetPokemon), 6);
+        updateEssaisChart();
 
         return;
     }
@@ -287,7 +296,7 @@ function checkGuess() {
 //quand une game en cours et qu'on revient, on affiche d'abord la première ligne
 function setFirstRow() {
     const currentRowCells = document.querySelectorAll(`#row-${currentRow} td`); //0 au début
-    const todayTriesCookie = getCookie("today_tries");
+    const todayTriesCookie = getCookie("motusma-today-tries");
     let allLettersCorrect = true;
 
     const targetLetterCounts = {};
@@ -363,7 +372,7 @@ function handleInput(key) {
 }
 
 function share() {
-    const copyText = "J'ai trouvé le Pokémon du jour en " + getCookie("nb_tries") + " essais sur " + window.location.href + ' ! \n' ;
+    const copyText = "J'ai trouvé le Pokémon du jour en " + getCookie("motusma-nb-tries") + " essais sur " + window.location.href + ' ! \n' ;
     navigator.clipboard.writeText(copyText);
 
     const notification = document.createElement('div');
@@ -409,7 +418,7 @@ function win(pokemonName) {
     playSound('win', 'mp3');
     pokeball.classList.remove('disabled');
     document.getElementById("results-titre").textContent = "Nom de Zeus !";
-    document.getElementById("results-text").textContent = "Tu as trouvé " + majFirstLetter(atob(getCookie("pokemon_du_jour"))) + " en " + getCookie("nb_tries") + " essai.s.";
+    document.getElementById("results-text").textContent = "Tu as trouvé " + majFirstLetter(atob(getCookie("motusma-answer"))) + " en " + getCookie("motusma-nb-tries") + " essai.s.";
     openResults();
     //results_pokemon.src = `https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/dream-world/${pkmn_id}.svg`;
     results_pokemon.src = `/sprites/${pkmn_id}.svg`;
@@ -420,7 +429,7 @@ function lose(pokemonName) {
     playSound('lose', 'mp3');
     pokeball.classList.remove('disabled');
     document.getElementById("results-titre").textContent = "Nom d'une pipe en bois !";
-    document.getElementById("results-text").textContent = "Le pokémon du jour était  " + majFirstLetter(atob(getCookie("pokemon_du_jour"))) + ".";
+    document.getElementById("results-text").textContent = "Le pokémon du jour était  " + majFirstLetter(atob(getCookie("motusma-answer"))) + ".";
     openResults();
     //results_pokemon.src = `https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/dream-world/${pkmn_id}.svg`;
     results_pokemon.src = `/sprites/${pkmn_id}.svg`;
@@ -479,7 +488,9 @@ function openPokedex() {
 function closePokedex() {
     main.style.display="none";
     content.style.display="";
-    if (document.cookie.split(';').some(cookie => cookie.trim().startsWith('finish_today=')) && document.cookie.split(';').find(cookie => cookie.trim().startsWith('finish_today=')).split('=')[1] !== btoa('true')) {
+
+    //on réactive ou non l'écouteur de touches selon si on a déjà terminé la partie du jour ou non
+    if (document.cookie.split(';').some(cookie => cookie.trim().startsWith('motusma-finish-today=')) && document.cookie.split(';').find(cookie => cookie.trim().startsWith('motusma-finish-today=')).split('=')[1] !== btoa('true')) {
         enableKeydownListener();
     }
 }
@@ -517,13 +528,12 @@ function openResults() {
 
 function closeResults() {
     results.style.display = "none";
-    // stats.style.display="none";
     document.getElementById("results_overlay").style.display="none";
 }
 
 function openPseudo() {
     formPseudo.style.display="flex";
-    document.getElementById('pseudo-input').value = localStorage.getItem('pseudo');
+    document.getElementById('pseudo-input').value = localStorage.getItem("motusma-pseudo");
     document.getElementById("pseudo_overlay").style.display="flex";
 }
 
@@ -537,8 +547,8 @@ function newPseudo(event) {
     const newPseudo = document.getElementById('pseudo-input').value;
 
     if (newPseudo.trim() !== '') {
-        localStorage.setItem('pseudo', newPseudo);
-        pseudo.textContent = localStorage.getItem('pseudo');
+        localStorage.setItem("motusma-pseudo", newPseudo);
+        pseudo.textContent = localStorage.getItem("motusma-pseudo");
         formPseudo.style.display="none";
         document.getElementById("pseudo_overlay").style.display="none";
     }
@@ -550,7 +560,7 @@ toggleButton.addEventListener('change', function() {
     const tds = document.querySelectorAll('td');
 
     tds.forEach(td => {
-        if (localStorage.getItem("theme") === "dark") {
+        if (localStorage.getItem("motusma-theme") === "dark") {
             td.style.color = 'black';
             td.style.boxShadow ='inset 0 0 0 3px black';
 
@@ -562,7 +572,7 @@ toggleButton.addEventListener('change', function() {
 
 
     if (this.checked) {        
-        localStorage.setItem("theme", "dark")
+        localStorage.setItem("motusma-theme", "dark")
         htmlElement.style.backgroundImage = "url('images/night.png')";
         toggleButton.textContent = 'Toggle Original Background Image';
         if(isMusicPlaying) {
@@ -573,7 +583,7 @@ toggleButton.addEventListener('change', function() {
         }
 
     } else {
-        localStorage.setItem("theme", "light")
+        localStorage.setItem("motusma-theme", "light")
         htmlElement.style.backgroundImage = "url('images/day.png')";
         toggleButton.textContent = 'Toggle Modified Background Image';
         if(isMusicPlaying) {
@@ -586,11 +596,11 @@ toggleButton.addEventListener('change', function() {
 });
 
 function newGame() {
-    document.cookie = `${"finish_today="}${btoa("false")}; expires=${tomorrow.toUTCString()}; path=/`;
-    document.cookie = `${"today_tries="}${"[[], [], [], [], []]"}; expires=${tomorrow.toUTCString()}; path=/`;
+    document.cookie = `${"motusma-finish-today="}${btoa("false")}; expires=${tomorrow.toUTCString()}; path=/`;
+    document.cookie = `${"motusma-today-tries="}${"[[], [], [], [], []]"}; expires=${tomorrow.toUTCString()}; path=/`;
 
     targetPokemon = chooseRandomPokemon();
-    document.cookie = `${"pokemon_du_jour="}${btoa(targetPokemon)}; expires=${tomorrow}; path=/`;
+    document.cookie = `${"motusma-answer="}${btoa(targetPokemon)}; expires=${tomorrow}; path=/`;
 
     generateWordGrid(targetPokemon.length);
     setFirstLetter();
@@ -598,7 +608,7 @@ function newGame() {
 
 //si l'on a déjà joué aujourd'hui (en cours, gagné ou perdu)
 function existingGame() {
-    targetPokemon = atob(getCookie("pokemon_du_jour"));
+    targetPokemon = atob(getCookie("motusma-answer"));
     generateWordGrid(targetPokemon.length);
     setFirstRow();
 }
@@ -614,22 +624,26 @@ loadPokemonData().then(data => {
     if (data) {
         pokemonData = data;
         pokemonList = data.map(pokemon => normalizeString(pokemon.name.french.toLowerCase()));
-        spanFound.textContent = localStorage.getItem("found") + "/151";
-        spanCatch.textContent = localStorage.getItem("catch") + "/151";
+        spanFound.textContent = localStorage.getItem("motusma-found") + "/151";
+        spanCatch.textContent = localStorage.getItem("motusma-catch") + "/151";
 
-        const todayTriesCookie = getCookie("today_tries");
-        if(!localStorage.getItem("metaphysique")) {
+        const todayTriesCookie = getCookie("motusma-today-tries");
+
+        //1ère visite sur le site, on affiche les règles & infos
+        if(!localStorage.getItem("motusma-metaphysique")) {
             openInfos();
-            localStorage.setItem("metaphysique", "nan nan");
+            localStorage.setItem("motusma-metaphysique", "nan nan");
         }
 
+        //on regarde si partie en cours ou pas encore commencée
         if (!todayTriesCookie || todayTriesCookie === "[[], [], [], [], []]") {
             newGame();
         } else {
             existingGame();
         }
 
-        if(localStorage.getItem("theme") === "dark") {
+        //gestion du thème clair ou sombre
+        if(localStorage.getItem("motusma-theme") === "dark") {
             const tds = document.querySelectorAll('td');
             tds.forEach(td => {
                 td.style.color = 'white'; 
@@ -637,7 +651,7 @@ loadPokemonData().then(data => {
             });
         }
 
-    } else {
+    } else { //erreur pittoresque 
         console.error('Impossible de charger les données.');
     }
 });
@@ -655,52 +669,55 @@ function getPokemonIdByName(pokemonName) {
     return null;
 }
 
-if (localStorage.getItem("theme") === "dark") {
+if (localStorage.getItem("motusma-theme") === "dark") {
     document.querySelector('html').style.backgroundImage = "url('images/night.png')";
     toggleButton.checked = true;
     music.src = 'images/no-music-white.svg';   
 }
 
-if (!localStorage.getItem('debut_aventure')) {
+if (!localStorage.getItem("motusma-start-journey")) {
     const currentDate = new Date();
     const formattedDate = `${currentDate.getDate()} ${moisEnFrancais[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
-    localStorage.setItem('debut_aventure', formattedDate);
+    localStorage.setItem("motusma-start-journey", formattedDate);
 }
 
-if (!localStorage.getItem('pseudo') || localStorage.getItem('pseudo') === '') {
-    localStorage.setItem('pseudo', 'Anonyme');
+if (!localStorage.getItem("motusma-pseudo") || localStorage.getItem("motusma-pseudo") === '') {
+    localStorage.setItem("motusma-pseudo", 'Anonyme');
 }
 
-if(!localStorage.getItem("found")) {
-    localStorage.setItem("found", 0);
+if(!localStorage.getItem("motusma-found")) {
+    localStorage.setItem("motusma-found", 0);
 }
 
-if(!localStorage.getItem("catch")) {
-    localStorage.setItem("catch", 0);
+if(!localStorage.getItem("motusma-catch")) {
+    localStorage.setItem("motusma-catch", 0);
 }
 
+//afficher les résultats si on revient sur le site après avoir terminé la partie du jour
 async function displayResultsComeBack() {
-    if (atob(getCookie("finish_today")) == "true"){
+    if (atob(getCookie("motusma-finish-today")) == "true"){
         await loadPokemonData();
-        if(getCookie("nb_tries") == "6") {
+        if(getCookie("motusma-nb-tries") == "6") {
             lose(targetPokemon);
         }
         else {
             win(targetPokemon);
         }
+
+        //on permet de cliquer sur la pokéball de résultats, et on met à jour les infos de cette modal
         pokeball.classList.remove('disabled');
-        pokemonID = getPokemonIdByName(atob(getCookie("pokemon_du_jour")));
+        pokemonID = getPokemonIdByName(atob(getCookie("motusma-answer")));
         //results_pokemon.src = `https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/dream-world/${pokemonID}.svg`;
         results_pokemon.src = `/sprites/${pokemonID}.svg`;
         results.style.display="";
     }
 }
 
-pseudo.textContent = localStorage.getItem('pseudo');
-debutAventure.textContent = localStorage.getItem('debut_aventure');
+pseudo.textContent = localStorage.getItem("motusma-pseudo");
+debutAventure.textContent = localStorage.getItem("motusma-start-journey");
 
 function updateUserData(isCatch, id, nbTries) {
-    let userData = JSON.parse(localStorage.getItem('user_data'));
+    let userData = JSON.parse(localStorage.getItem("motusma-data"));
 
     if (!userData){
         userData = {};
@@ -724,7 +741,7 @@ function updateUserData(isCatch, id, nbTries) {
             };
 
             userData[`pkmn_${newPokemonId}`] = newPokemon;
-            localStorage.setItem('user_data', JSON.stringify(userData));
+            localStorage.setItem("motusma-data", JSON.stringify(userData));
         }
     } 
     else {
@@ -737,10 +754,8 @@ function updateUserData(isCatch, id, nbTries) {
         };
 
         userData[`pkmn_${newPokemonId}`] = newPokemon;
-        localStorage.setItem('user_data', JSON.stringify(userData));
+        localStorage.setItem("motusma-data", JSON.stringify(userData));
     } 
 }
 
 window.addEventListener('keydown', keydownHandler);
-
-

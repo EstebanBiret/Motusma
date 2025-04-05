@@ -196,7 +196,7 @@ function displayPokemons(pokemon) {
     let pokemonImageSrc = `/sprites/${pokemonID}.svg`;
     let pokeballElement = '';
     const pokeball = 'images/pokeball.png'
-    let userData = JSON.parse(localStorage.getItem('user_data'));
+    let userData = JSON.parse(localStorage.getItem("motusma-data"));
     let encountered = null;
 
     if(userData){
