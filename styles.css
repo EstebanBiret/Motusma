@@ -274,9 +274,9 @@ button {
 }
 
 td {
-    width: 80px;
-    height: 80px;
-    font-size: 40px;
+    width: 4rem;
+    height: 4rem;
+    font-size: 2rem;
     backdrop-filter: blur(5px);
     transition: background-color .3s ease;
     border-radius: 8px;
@@ -302,12 +302,14 @@ td {
   height: max-content;
   width: max-content;
   max-width: 30vw;
-  max-height: 100vh;
+  max-height: 80vh;
   align-items: center;
 }
 
 #results-pokemon {
-  width: 250px;
+  width: 30%;
+  max-width: 350px;
+  max-height: 250px;
   margin: 2rem;
 }
 
@@ -760,6 +762,47 @@ td {
     border-color: transparent;
     background-color: transparent;
   }
+
+/* Clavier */
+
+#virtual-keyboard {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.keyboard-row {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}
+
+.keyboard-button {
+  width: 4rem;
+  height: 4rem;
+  border: 2px solid #000;
+  border-radius: 5px;
+  background-color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: pokemon;
+}
+
+.keyboard-button:hover {
+  transform: scale(1.05);
+}
+
+.keyboard-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#backspace-btn, #enter-btn {
+  width: 60px;
+}
 
 /* COUNTDOWN (NAN NAN) */
 

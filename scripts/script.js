@@ -76,7 +76,6 @@ function toggleMusic() {
 }
 
 function showTextBox() {
-    //playSound("wrong", "mp3");
     textBox.style.visibility = "visible";
     textBox.style.bottom = "20px";
 
@@ -140,9 +139,49 @@ function updateGridWithGuess(del, key) {
         cell.textContent = key.toUpperCase();        
         currentPosition++;
         //playSound('letter', 'wav');
+        updateKeyboardButtonColor(key.toLowerCase());
     } else {
         cell.textContent = '';
         cell.style.backgroundColor = 'transparent';
+    }
+}
+
+function updateKeyboardButtonColor(letter) {
+    const keyboardButtons = document.querySelectorAll('.keyboard-button');
+    let keyboardButton = null;
+
+    // Trouver le bouton correspondant à la lettre
+    keyboardButtons.forEach(button => {
+        if (button.textContent.toLowerCase() === letter) {
+            keyboardButton = button;
+        }
+    });
+
+    if (!keyboardButton) return;
+
+    // Vérifier si la lettre est déjà colorée
+    if (keyboardButton.style.backgroundColor) {
+        return;
+    }
+
+    // Vérifier la couleur de toutes les cellules de la ligne actuelle
+    const currentRowCells = document.querySelectorAll(`#row-${currentRow} td`);
+    let cellColor = null;
+
+    currentRowCells.forEach(cell => {
+        if (cell.textContent.toLowerCase() === letter) {
+            if (cell.style.backgroundColor === 'rgb(243, 100, 69)') {
+                cellColor = 'rgb(243, 100, 69)'; // Rouge (priorité)
+            } else if (cell.style.backgroundColor === 'rgb(240, 218, 26)') {
+                cellColor = 'rgb(240, 218, 26)'; // Jaune
+            }
+        }
+    });
+
+    if (cellColor) {
+        keyboardButton.style.backgroundColor = cellColor;
+    } else {
+        keyboardButton.style.backgroundColor = '#666666'; // Gris
     }
 }
 
@@ -218,6 +257,14 @@ function checkGuess() {
 
     let nb_tries = currentRow + 1
 
+    // Mettre à jour les couleurs du clavier pour toutes les lettres utilisées
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    for (const letter of alphabet) {
+        if (guessedWord.toLowerCase().includes(letter)) {
+            updateKeyboardButtonColor(letter);
+        }
+    }
+
     //VICTOIRE
     if (allLettersCorrect && currentRowCells.length === targetPokemon.length) {
 
@@ -246,8 +293,9 @@ function checkGuess() {
         spanFound.textContent = localStorage.getItem("motusma-found") + "/151";
         spanCatch.textContent = localStorage.getItem("motusma-catch") + "/151";
 
-        //on désactive l'écouteur de touches, on maj les données utilisateur et le graphique des stats
+        //on désactive l'écouteur de touches et le clavier virtuel, on maj les données utilisateur et le graphique des stats
         disableKeydownListener();
+        disableVirtualKeyboard();
         updateUserData(true, getPokemonIdByName(targetPokemon), nb_tries);
         updateEssaisChart();
 
@@ -278,8 +326,9 @@ function checkGuess() {
         spanFound.textContent = localStorage.getItem("motusma-found") + "/151";
         spanCatch.textContent = localStorage.getItem("motusma-catch") + "/151";
 
-        //on désactive l'écouteur de touches, on maj les données utilisateur et le graphique des stats
+        //on désactive l'écouteur de touches et le clavier virtuel, on maj les données utilisateur et le graphique des stats
         disableKeydownListener();
+        disableVirtualKeyboard();
         updateUserData(false, getPokemonIdByName(targetPokemon), 6);
         updateEssaisChart();
 
@@ -310,6 +359,11 @@ function setFirstRow() {
         currentRowCells.forEach((cell, index) => {
             const guessedLetter = todayTries[currentRow][index].toUpperCase() || '';
             cell.textContent = guessedLetter;
+
+            // Mettre à jour la couleur du clavier pour chaque lettre
+            if (guessedLetter) {
+                updateKeyboardButtonColor(guessedLetter.toLowerCase());
+            }
             const targetLetter = targetPokemon[index].toUpperCase();
 
             if (guessedLetter === targetLetter) {
@@ -335,6 +389,7 @@ function setFirstRow() {
             displayResultsComeBack();
             pokeball.classList.remove('disabled');
             disableKeydownListener();
+            disableVirtualKeyboard();
         }
         else {
             currentRow++;
@@ -345,6 +400,7 @@ function setFirstRow() {
                 displayResultsComeBack();
                 pokeball.classList.remove('disabled');
                 disableKeydownListener();
+                disableVirtualKeyboard();
                 return;
             }
             else if(todayTries[currentRow].length === 0) { //on reprend le jeu normal
@@ -360,12 +416,13 @@ function setFirstRow() {
 }
 
 function handleInput(key) {
-    if (key === 'Backspace') {
+    if (key === 'Backspace' || key === 'backspace') {
         if (numberOfLetters > 0) {
             numberOfLetters--;
             updateGridWithGuess(true, key);
         }
-    } else if (/^[a-zA-Z]$/.test(key) && numberOfLetters < targetPokemon.length) {
+    } 
+    else if (/^[a-zA-Z]$/.test(key) && numberOfLetters < targetPokemon.length) {
         numberOfLetters++;
         updateGridWithGuess(false, key);
     }
@@ -453,9 +510,29 @@ function disableKeydownListener() {
     window.removeEventListener('keydown', keydownHandler);
 }
 
+// Fonction pour désactiver le clavier virtuel
+function disableVirtualKeyboard() {
+    const keyboardButtons = document.querySelectorAll('.keyboard-button');
+    keyboardButtons.forEach(button => {
+        button.disabled = true;
+
+        //je remets ça pck disabled met un style par défaut
+        button.style.opacity = '1';
+        button.style.cursor = 'pointer';
+    });
+}
+
 // Fonction pour réactiver l'écouteur d'événements
 function enableKeydownListener() {
     window.addEventListener('keydown', keydownHandler);
+}
+
+// Fonction pour réactiver le clavier virtuel
+function enableVirtualKeyboard() {
+    const keyboardButtons = document.querySelectorAll('.keyboard-button');
+    keyboardButtons.forEach(button => {
+        button.disabled = false;
+    });
 }
 
 function getCookie(name) {
@@ -479,6 +556,7 @@ function updateFinishTodayCookie(cookieName, newValue) {
 
 function openPokedex() {
     disableKeydownListener();
+    disableVirtualKeyboard();
     main.style.display="flex";
     content.style.display="none";
     results.style.display="none";
@@ -492,6 +570,7 @@ function closePokedex() {
     //on réactive ou non l'écouteur de touches selon si on a déjà terminé la partie du jour ou non
     if (document.cookie.split(';').some(cookie => cookie.trim().startsWith('motusma-finish-today=')) && document.cookie.split(';').find(cookie => cookie.trim().startsWith('motusma-finish-today=')).split('=')[1] !== btoa('true')) {
         enableKeydownListener();
+        enableVirtualKeyboard();
     }
 }
 
@@ -501,10 +580,12 @@ function openStats() {
     document.getElementById("results_overlay").style.display="none";
     document.getElementById("stats_overlay").style.display="flex";
     disableKeydownListener();
+    disableVirtualKeyboard();
 }
 
 function closeStats() {
     enableKeydownListener();
+    enableVirtualKeyboard();
     stats.style.display='none';
     document.getElementById("stats_overlay").style.display="none";
 }
@@ -513,10 +594,12 @@ function openInfos() {
     infos.style.display="flex";
     document.getElementById("infos_overlay").style.display="flex";
     disableKeydownListener();
+    disableVirtualKeyboard();
 }
 
 function closeInfos() {
     enableKeydownListener();
+    enableVirtualKeyboard();
     infos.style.display='none';
     document.getElementById("infos_overlay").style.display="none";
 }
@@ -558,16 +641,31 @@ toggleButton.addEventListener('change', function() {
     const htmlElement = document.querySelector('html');
 
     const tds = document.querySelectorAll('td');
+    const keyboardButtons = document.querySelectorAll('.keyboard-button');
 
     tds.forEach(td => {
         if (localStorage.getItem("motusma-theme") === "dark") {
-            td.style.color = 'black';
-            td.style.boxShadow ='inset 0 0 0 3px black';
-
+            td.style.color = '#000';
+            td.style.boxShadow ='inset 0 0 0 3px #000';
         } else {
-            td.style.color = 'white'; 
-            td.style.boxShadow = 'inset 0 0 0 3px white';
+            td.style.color = '#fff'; 
+            td.style.boxShadow = 'inset 0 0 0 3px #fff';
         }
+    });
+
+    keyboardButtons.forEach(button => {
+        if (localStorage.getItem("motusma-theme") === "dark") {
+            button.style.color = '#000';
+            button.style.backgroundColor = '#fff';
+            button.style.border = '2px solid #000';
+        } else {
+            button.style.color = '#fff';
+            button.style.backgroundColor = '#110644';
+            button.style.border = '2px solid #fff';
+        }
+
+        //puis on remet les couleurs des touches
+        updateKeyboardButtonColor(button.textContent.toLowerCase());
     });
 
 
@@ -643,18 +741,108 @@ loadPokemonData().then(data => {
         }
 
         //gestion du thème clair ou sombre
+        const keyboardButtons = document.querySelectorAll('.keyboard-button');
+
         if(localStorage.getItem("motusma-theme") === "dark") {
+
             const tds = document.querySelectorAll('td');
             tds.forEach(td => {
-                td.style.color = 'white'; 
-                td.style.boxShadow = 'inset 0 0 0 3px white';
+                td.style.color = '#fff'; 
+                td.style.boxShadow = 'inset 0 0 0 3px #fff';
+            });
+
+            keyboardButtons.forEach(button => {
+                button.style.color = '#fff';
+                button.style.backgroundColor = '#110644';
+                button.style.border = '2px solid #fff';
             });
         }
+        else {
+            keyboardButtons.forEach(button => {
+                button.style.color = '#000';
+                button.style.backgroundColor = '#fff';
+                button.style.border = '2px solid #000';
+            });
+        }
+
+        // Initialiser le clavier virtuel
+        initVirtualKeyboard();
 
     } else { //erreur pittoresque 
         console.error('Impossible de charger les données.');
     }
 });
+
+function initVirtualKeyboard() {
+    const keyboard = document.getElementById('virtual-keyboard');
+    if (!keyboard) return;
+
+    const keyboardButtons = keyboard.querySelectorAll('.keyboard-button');
+    
+    keyboardButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const key = button.textContent;
+            handleVirtualKey(key);
+        });
+    });
+
+    // Mettre à jour les couleurs du clavier lors du chargement
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    for (const letter of alphabet) {
+        updateKeyboardButtonColor(letter);
+    }
+}
+
+function handleVirtualKey(key) {
+    if (key === '⌫') {
+        handleInput('backspace');
+    } else if (key === '→') {
+        checkGuess();
+    } else {
+        handleInput(key.toLowerCase());
+        updateKeyboardButtonColor(key.toLowerCase());
+    }
+}
+
+// Fonction pour mettre à jour les couleurs des touches du clavier
+function updateKeyboardButtonColor(letter) {
+    console.log(letter);
+    const keyboardButtons = document.querySelectorAll('.keyboard-button');
+    let keyboardButton = null;
+
+    // Trouver le bouton correspondant à la lettre
+    keyboardButtons.forEach(button => {
+        console.log(button);
+        if (button.textContent.toLowerCase() === letter) {
+            keyboardButton = button;
+        }
+    });
+
+    if (!keyboardButton) return;
+
+    if (keyboardButton.style.backgroundColor === '#fff' || keyboardButton.style.backgroundColor === '#110644') {
+        return;
+    }
+
+    // Vérifier toutes les cellules de toutes les lignes pour trouver la couleur la plus significative
+    let cellColor = null;
+    for (let row = 0; row <= currentRow; row++) {
+        const rowCells = document.querySelectorAll(`#row-${row} td`);
+        rowCells.forEach(cell => {
+            if (cell.textContent.toLowerCase() === letter) {
+                if (cell.style.backgroundColor === 'rgb(243, 100, 69)') {
+                    cellColor = 'rgb(243, 100, 69)';
+                } else if (cell.style.backgroundColor === 'rgb(240, 218, 26)') {
+                    cellColor = 'rgb(240, 218, 26)';
+                }
+            }
+        });
+    }
+
+    if (cellColor) {
+        keyboardButton.style.backgroundColor = cellColor;
+    }
+}
 
 function getPokemonIdByName(pokemonName) {
     if (!pokemonData) {
