@@ -4,17 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Détails du Pokémon</title>
-    <link rel="stylesheet" href="styles.css?v=2" />
-    <script src="./scripts/pokemon-detail.js?v=2" defer></script>
+    <link rel="stylesheet" href="styles.css?v=3" />
+    <script src="./scripts/pokemon-detail.js?v=3" defer></script>
     <link rel="icon" href="images/motisma.png" type="image/x-icon">
   </head>
   <body>
     <main class="detail-main main">
       <header class="header">
-
         <div class="header-wrapper">
           <div class="header-wrap">
-            
             <div class="name-wrap">
               <h1 class="name"></h1>
             </div>
@@ -24,6 +22,8 @@
           </div>
         </div>
       </header>
+
+      <div id="return-pokedex" onclick="backToPokedex()">⮐</div>
       <div id="close-pokedex-details" onclick="closePokedexDetails()">X</div>
 
       <div class="featured-img">
@@ -37,15 +37,14 @@
           <img src="./images/chevron_right.svg" alt="forward" />
         </a>
       </div>
+
       <div class="detail-card-detail-wrapper">
         <div class="power-wrapper">
           <p class="body3-fonts type grass"></p>
           <p class="body3-fonts type poison"></p>
         </div>
 
-        <!-- <div class="test"> -->
-          <p class="captureInfos"></p>
-        <!-- </div> -->
+        <p class="captureInfos"></p>
 
         <p class="body2-fonts about-text">Infos</p>
         <div class="pokemon-detail-wrapper">
@@ -89,7 +88,8 @@
           </div>
         </div>
       </div>
-      <img src="./images/pokedex.svg" alt="pokedex" class="detail-bg" />
+
+      <img src="./images/pokedex.svg" alt="Pokédex" class="detail-bg" />
     </main>
   </body>
 </html>

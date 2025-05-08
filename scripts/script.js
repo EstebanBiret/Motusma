@@ -12,16 +12,24 @@ const moisEnFrancais = [
     "juillet", "août", "septembre", "octobre", "novembre", "décembre"
 ];
 
-const toggleButton = document.getElementById('hide-checkbox');
+const TOOLTIPS = document.querySelectorAll('.tooltip-trigger');
+
+const SAC_TEXT = document.getElementById('left-title');
+const OPTIONS_TEXT = document.getElementById('right-title');
+
+const IMG_MUSIC = document.getElementById('img-music');
+
+const MOT_INVALIDE_MODAL = document.getElementById("mot-invalide");
+
+const imgTheme = document.getElementById('img-theme');
 const main = document.getElementById("main");
 const results = document.getElementById("results");
-const infos = document.getElementById("infos");
-const textBox = document.getElementById("text-box");
+const HELP = document.getElementById("help");
 const content = document.getElementById("page-content");
-const pokeball = document.getElementById("pokeball");
+const pokeball = document.getElementById("pokeball-results");
 const pseudo = document.getElementById("pseudo");
 const debutAventure = document.getElementById("debut-aventure");
-const music = document.getElementById("music");
+const music = document.getElementById("img-music");
 const stats = document.getElementById("stats");
 const results_pokemon = document.getElementById("results-pokemon");
 const formPseudo = document.getElementById('form-changer-pseudo');
@@ -33,8 +41,8 @@ const spanFound = document.querySelector("#found span");
 const spanCatch = document.querySelector("#catch span");
 
 //hide invalidWord msg
-textBox.style.visibility = "hidden";
-textBox.style.bottom = "-" + textBox.clientHeight + "px";
+MOT_INVALIDE_MODAL.style.visibility = "hidden";
+MOT_INVALIDE_MODAL.style.bottom = "-" + MOT_INVALIDE_MODAL.clientHeight + "px";
 
 //play any sound
 function playSound(soundName, type) {
@@ -53,35 +61,24 @@ function majFirstLetter(string) {
 function toggleMusic() {
     if (isMusicPlaying) {
         bg_music.volume = 0;
-        if(localStorage.getItem("motusma-theme") === "dark") {
-            music.src = 'images/no-music-white.svg';
-        }
-        else {
-            music.src = 'images/no-music.svg';
-        }
     } else {
         if(!musicHasStarted) {
             musicHasStarted = true;
             bg_music.play()
         }
         bg_music.volume = 1;
-        if(localStorage.getItem("motusma-theme") === "dark") {
-            music.src = 'images/music-white.svg';
-        }
-        else {
-            music.src = 'images/music.svg';
-        }
     }
     isMusicPlaying = !isMusicPlaying;
+    IMG_MUSIC.src = isMusicPlaying ? "images/music.svg" : "images/no-music.svg";
 }
 
-function showTextBox() {
-    textBox.style.visibility = "visible";
-    textBox.style.bottom = "20px";
+function showModalInvalidWord() {
+    MOT_INVALIDE_MODAL.style.visibility = "visible";
+    MOT_INVALIDE_MODAL.style.bottom = "20px";
 
     setTimeout(function () {
-        textBox.style.bottom = "-" + textBox.clientHeight + "px";
-        textBox.style.visibility = "hidden";
+        MOT_INVALIDE_MODAL.style.bottom = "-" + MOT_INVALIDE_MODAL.clientHeight + "px";
+        MOT_INVALIDE_MODAL.style.visibility = "hidden";
     }, 2000);
 }
 
@@ -127,7 +124,6 @@ function updateGridWithGuess(del, key) {
 
     if (del) {
         if (currentPosition !== 0) {
-            //playSound('back', 'mp3');
             currentPosition--;
             index--;
         }
@@ -138,7 +134,6 @@ function updateGridWithGuess(del, key) {
     if (key && /^[a-zA-Z]$/.test(key)) {
         cell.textContent = key.toUpperCase();        
         currentPosition++;
-        //playSound('letter', 'wav');
         updateKeyboardButtonColor(key.toLowerCase());
     } else {
         cell.textContent = '';
@@ -211,7 +206,7 @@ function checkGuess() {
     }
 
     if (guessedWord === '' || (!isValidFrenchWord(guessedWord) && !isValidPokemonName(guessedWord) || currentRowCells[targetPokemon.length -1].textContent == '')) {
-        showTextBox();
+        showModalInvalidWord();
         return;
     }
 
@@ -555,30 +550,20 @@ function updateFinishTodayCookie(cookieName, newValue) {
 }
 
 function openPokedex() {
-    disableKeydownListener();
+    /*disableKeydownListener();
     disableVirtualKeyboard();
     main.style.display="flex";
     content.style.display="none";
     results.style.display="none";
-    document.getElementById("results_overlay").style.display="none";
-}
-
-function closePokedex() {
-    main.style.display="none";
-    content.style.display="";
-
-    //on réactive ou non l'écouteur de touches selon si on a déjà terminé la partie du jour ou non
-    if (document.cookie.split(';').some(cookie => cookie.trim().startsWith('motusma-finish-today=')) && document.cookie.split(';').find(cookie => cookie.trim().startsWith('motusma-finish-today=')).split('=')[1] !== btoa('true')) {
-        enableKeydownListener();
-        enableVirtualKeyboard();
-    }
+    document.getElementById("results-overlay").style.display="none";*/
+    window.location.href = "./pokedex.html";
 }
 
 function openStats() {
     stats.style.display="flex";
     results.style.display="none";
-    document.getElementById("results_overlay").style.display="none";
-    document.getElementById("stats_overlay").style.display="flex";
+    document.getElementById("results-overlay").style.display="none";
+    document.getElementById("stats-overlay").style.display="flex";
     disableKeydownListener();
     disableVirtualKeyboard();
 }
@@ -587,31 +572,31 @@ function closeStats() {
     enableKeydownListener();
     enableVirtualKeyboard();
     stats.style.display='none';
-    document.getElementById("stats_overlay").style.display="none";
+    document.getElementById("stats-overlay").style.display="none";
 }
 
-function openInfos() {
-    infos.style.display="flex";
-    document.getElementById("infos_overlay").style.display="flex";
+function openHelp() {
+    HELP.style.display="flex";
+    document.getElementById("help-overlay").style.display="flex";
     disableKeydownListener();
     disableVirtualKeyboard();
 }
 
-function closeInfos() {
+function closeHelp() {
     enableKeydownListener();
     enableVirtualKeyboard();
-    infos.style.display='none';
-    document.getElementById("infos_overlay").style.display="none";
+    HELP.style.display='none';
+    document.getElementById("help-overlay").style.display="none";
 }
 
 function openResults() {
     results.style.display = "flex";
-    document.getElementById("results_overlay").style.display="flex";
+    document.getElementById("results-overlay").style.display="flex";
 }
 
 function closeResults() {
     results.style.display = "none";
-    document.getElementById("results_overlay").style.display="none";
+    document.getElementById("results-overlay").style.display="none";
 }
 
 function openPseudo() {
@@ -637,7 +622,7 @@ function newPseudo(event) {
     }
 }
 
-toggleButton.addEventListener('change', function() {
+function toggleTheme() {
     const htmlElement = document.querySelector('html');
 
     const tds = document.querySelectorAll('td');
@@ -668,30 +653,20 @@ toggleButton.addEventListener('change', function() {
         updateKeyboardButtonColor(button.textContent.toLowerCase());
     });
 
-
-    if (this.checked) {        
+    if (imgTheme.src.includes("sun")) {        
         localStorage.setItem("motusma-theme", "dark")
         htmlElement.style.backgroundImage = "url('images/night.png')";
-        toggleButton.textContent = 'Toggle Original Background Image';
-        if(isMusicPlaying) {
-            music.src = 'images/music-white.svg';
-        }
-        else {
-            music.src = 'images/no-music-white.svg';
-        }
-
+        imgTheme.src = "images/moon.svg";
+        SAC_TEXT.style.color = '#fff';
+        OPTIONS_TEXT.style.color = '#fff';
     } else {
         localStorage.setItem("motusma-theme", "light")
         htmlElement.style.backgroundImage = "url('images/day.png')";
-        toggleButton.textContent = 'Toggle Modified Background Image';
-        if(isMusicPlaying) {
-            music.src = 'images/music.svg';
-        }
-        else {
-            music.src = 'images/no-music.svg';
-        }
+        imgTheme.src = "images/sun.svg";
+        SAC_TEXT.style.color = '#000';
+        OPTIONS_TEXT.style.color = '#000';
     }
-});
+}
 
 function newGame() {
     document.cookie = `${"motusma-finish-today="}${btoa("false")}; expires=${tomorrow.toUTCString()}; path=/`;
@@ -727,9 +702,9 @@ loadPokemonData().then(data => {
 
         const todayTriesCookie = getCookie("motusma-today-tries");
 
-        //1ère visite sur le site, on affiche les règles & infos
+        //1ère visite sur le site, on affiche les règles
         if(!localStorage.getItem("motusma-metaphysique")) {
-            openInfos();
+            openHelp();
             localStorage.setItem("motusma-metaphysique", "nan nan");
         }
 
@@ -756,6 +731,11 @@ loadPokemonData().then(data => {
                 button.style.backgroundColor = '#110644';
                 button.style.border = '2px solid #fff';
             });
+
+            document.querySelector('html').style.backgroundImage = "url('images/night.png')";
+            imgTheme.src = "images/moon.svg";
+            SAC_TEXT.style.color = '#fff';
+            OPTIONS_TEXT.style.color = '#fff';
         }
         else {
             keyboardButtons.forEach(button => {
@@ -765,13 +745,39 @@ loadPokemonData().then(data => {
             });
         }
 
-        // Initialiser le clavier virtuel
+        //initialisation du clavier virtuel
         initVirtualKeyboard();
+
+        //initialisation des tooltips
+        initTooltips();
 
     } else { //erreur pittoresque 
         console.error('Impossible de charger les données.');
     }
 });
+
+//affichage des tooltips au survol
+function initTooltips() {
+    TOOLTIPS.forEach(trigger => {
+        const TOOLTIP = trigger.nextElementSibling;
+    
+        trigger.addEventListener('mouseenter', () => {
+          const TOOLTIP_CONTENT = trigger.getAttribute('data-tooltip');
+          TOOLTIP.querySelector('.tooltip-inner').textContent = TOOLTIP_CONTENT;
+          TOOLTIP.setAttribute('aria-hidden', 'false');
+    
+          const RECT = trigger.getBoundingClientRect();
+          const SCROLL_Y = window.scrollY || window.pageYOffset;
+    
+          TOOLTIP.style.top = `${RECT.bottom + SCROLL_Y + 5}px`;
+          TOOLTIP.style.left = `${RECT.left + (RECT.width / 2) - (TOOLTIP.offsetWidth / 2)}px`;
+        });
+    
+        trigger.addEventListener('mouseleave', () => {
+            TOOLTIP.setAttribute('aria-hidden', 'true');
+        });
+    });
+}
 
 function initVirtualKeyboard() {
     const keyboard = document.getElementById('virtual-keyboard');
@@ -806,13 +812,11 @@ function handleVirtualKey(key) {
 
 // Fonction pour mettre à jour les couleurs des touches du clavier
 function updateKeyboardButtonColor(letter) {
-    console.log(letter);
     const keyboardButtons = document.querySelectorAll('.keyboard-button');
     let keyboardButton = null;
 
     // Trouver le bouton correspondant à la lettre
     keyboardButtons.forEach(button => {
-        console.log(button);
         if (button.textContent.toLowerCase() === letter) {
             keyboardButton = button;
         }
@@ -855,12 +859,6 @@ function getPokemonIdByName(pokemonName) {
       }
     }
     return null;
-}
-
-if (localStorage.getItem("motusma-theme") === "dark") {
-    document.querySelector('html').style.backgroundImage = "url('images/night.png')";
-    toggleButton.checked = true;
-    music.src = 'images/no-music-white.svg';   
 }
 
 if (!localStorage.getItem("motusma-start-journey")) {

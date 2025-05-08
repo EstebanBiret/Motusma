@@ -1,8 +1,7 @@
 - faire le responsive
-- monter les icones tout en haut et les mettre plus petites
-- ajouter des tooltips/title aux icônes
-- changer le bouton jour/nuit pour un truc basique
 - quand on clique à côté d'une modal ou touche échap pressée, on ferme la modal
-- voir pokéhunt pour responsive bar et style des bars
+- voir tous les TODO et codes commentés
+- refactorer le code
+- passer la page index, pokedex et detail sur le site validator w3c 
 
-/!\ Après avoir tout fini, mettre le repo Github en public + faire un README /!\
+/!\ Après avoir tout fini, mettre le repo Github en public + faire un README + supprimer ce fichier/!\

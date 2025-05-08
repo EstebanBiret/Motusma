@@ -495,6 +495,5 @@ function saucissonPinard(pokemonSpecies) {
   return "";
 }
 
-function closePokedexDetails() {
-  window.location.href = 'index.html';
-}
+function closePokedexDetails() {window.location.href = '/';}
+function backToPokedex() {window.location.href = '/pokedex.html';}

@@ -1,7 +1,7 @@
 const MAX_POKEMON = 151;
-const listWrapper = document.querySelector(".list-wrapper");
+const LIST_WRAPPER = document.querySelector(".list-wrapper");
 
-const nomTrad = {
+const NOMS_TRADUITS = {
   "Bulbasaur": "Bulbizarre",
   "Ivysaur": "Herbizarre",
   "Venusaur": "Florizarre",
@@ -185,22 +185,22 @@ async function fetchPokemonDataBeforeRedirect(id) {
 }
 
 function displayPokemons(pokemon) {
-  listWrapper.innerHTML = "";
+  LIST_WRAPPER.innerHTML = "";
 
   pokemon.forEach((pokemon) => {
-    const pokemonID = pokemon.url.split("/")[6];
-    const listItem = document.createElement("div");
-    listItem.className = "list-item";
-    let pokemonName = nomTrad[capitalizeFirstLetter(pokemon.name)];
-    //let pokemonImageSrc = `https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/dream-world/${pokemonID}.svg`;
-    let pokemonImageSrc = `/sprites/${pokemonID}.svg`;
+    const POKEMON_ID = pokemon.url.split("/")[6];
+    const LIST_ITEM = document.createElement("div");
+    LIST_ITEM.className = "list-item";
+    let pokemonName = NOMS_TRADUITS[capitalizeFirstLetter(pokemon.name)];
+    //let pokemonImageSrc = `https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/dream-world/${POKEMON_ID}.svg`;
+    let pokemonImageSrc = `/sprites/${POKEMON_ID}.svg`;
     let pokeballElement = '';
-    const pokeball = 'images/pokeball.png'
+    const POKEBALL_IMAGE = 'images/pokeball.png'
     let userData = JSON.parse(localStorage.getItem("motusma-data"));
     let encountered = null;
 
     if(userData){
-      encountered = userData[`pkmn_${pokemonID}`];
+      encountered = userData[`pkmn_${POKEMON_ID}`];
     }
 
     if (!encountered) {
@@ -209,13 +209,13 @@ function displayPokemons(pokemon) {
     }
     else {
       if(encountered.catch) {
-        pokeballElement = `<img src="${pokeball}" width="20px" height="20px"/>`;
+        pokeballElement = `<img src="${POKEBALL_IMAGE}" width="20px" height="20px"/>`;
       }
     }
 
-    listItem.innerHTML = `
+    LIST_ITEM.innerHTML = `
         <div class="number-wrap">
-          <p class="caption-fonts">#${pokemonID}</p>
+          <p class="caption-fonts">#${POKEMON_ID}</p>
           ${pokeballElement}
         </div>
         <div class="img-wrap">
@@ -226,13 +226,25 @@ function displayPokemons(pokemon) {
         </div>
     `;
 
-    listItem.addEventListener("click", async () => {
-      const success = await fetchPokemonDataBeforeRedirect(pokemonID);
-      if (success) {
-        window.location.href = `./detail.html?id=${pokemonID}`;
+    LIST_ITEM.addEventListener("click", async () => {
+      const SUCCES = await fetchPokemonDataBeforeRedirect(POKEMON_ID);
+      if (SUCCES) {
+        window.location.href = `./detail.html?id=${POKEMON_ID}`;
       }
     });
 
-    listWrapper.appendChild(listItem);
+    LIST_WRAPPER.appendChild(LIST_ITEM);
   });
+}
+
+function closePokedex() {
+  /*main.style.display="none";
+  content.style.display="";
+
+  //on réactive ou non l'écouteur de touches selon si on a déjà terminé la partie du jour ou non
+  if (document.cookie.split(';').some(cookie => cookie.trim().startsWith('motusma-finish-today=')) && document.cookie.split(';').find(cookie => cookie.trim().startsWith('motusma-finish-today=')).split('=')[1] !== btoa('true')) {
+      enableKeydownListener();
+      enableVirtualKeyboard();
+  }*/
+  window.location.href = "./";
 }

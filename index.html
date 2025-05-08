@@ -1,208 +1,193 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Motusma</title>
-        <link rel="stylesheet" href="styles.css?v=2">
-        <script src="./scripts/pokemon.js?v=2" defer></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <link rel="icon" href="images/motisma.png" type="image/x-icon">
-    </head>
-    <body>
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Motusma</title>
+      <link rel="stylesheet" href="styles.css?v=3">
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <link rel="icon" href="images/motisma.png" type="image/x-icon">
+  </head>
+  <body>
 
-      <main class="main" id="main">
-        <header class="header home">
-          <div class="container">
-            <div class="logo-wrapper">
-              <img src="./images/pokeball.svg" alt="pokeball" />
-              <h1>Pokedex</h1>
-              <div id="close-pokedex" onclick="closePokedex()">X</div>
-            </div>
+    <!-- LOGO D'ACCUEIL-->
+    <div id="logo">
+      <img src="images/logo.png" alt="Logo" id="logo-img">
+    </div>
+
+    <!-- NAVBAR -->
+    <div id="navbar">
+      <div class="left-items">
+        <div id="left-title">Sac</div>
+        <div class="bag">
+          <img src="images/pokedex.png" id="img-open" alt="Pokédex" class="tooltip-trigger" data-tooltip="Pokédex" onclick="openPokedex()">
+          <div class="tooltip" aria-hidden="true">
+            <div class="tooltip-inner"></div>
           </div>
-        </header>
-        <section class="pokemon-list">
-          <div class="container">
-            <div class="list-wrapper"></div>
+          <img src="images/stats.png" id="img-stats" alt="Stats" class="tooltip-trigger" data-tooltip="Statistiques" onclick="openStats()">
+          <div class="tooltip" aria-hidden="true">
+            <div class="tooltip-inner"></div>
           </div>
-        </section>
-      </main>
-
-      <div id="page-content">
-        <img src="images/logo.png" id="logo" alt="Logo" width="420px" style="margin-top: 20px;">
-
-        <div id="bar">
-          <div id="nan">
-            <img src="images/pokedex.png" id="img-open" alt="pokedex" onclick="openPokedex()">
-            <img src="images/stats.png" id="img-stats" alt="stats" onclick="openStats()">
-            <img src="images/info.png" id="img-infos" alt="infos" onclick="openInfos()">
+          <img src="images/pokeball.png" id="pokeball-results" alt="Pokeball" class="tooltip-trigger disabled" data-tooltip="Résultats" onclick="openResults()">
+          <div class="tooltip" aria-hidden="true">
+            <div class="tooltip-inner"></div>
           </div>
-          <img src="images/pokeball.png" id="pokeball" alt="Pokeball" width="100px" class="disabled" onclick="openResults()">
-          <img src="images/no-music.svg" id="music" alt="no-music" width="70px" onclick="toggleMusic()">
-          <div id="theme">
-            <input type="checkbox" id="hide-checkbox">
-            <label for="hide-checkbox" class="toggle">
-              <span class="toggle-button">
-                <span class="crater crater-1"></span>
-                <span class="crater crater-2"></span>
-                <span class="crater crater-3"></span>   
-                <span class="crater crater-4"></span>
-                <span class="crater crater-5"></span>
-                <span class="crater crater-6"></span>
-                <span class="crater crater-7"></span>
-              </span>
-              <span class="star star-1"></span>
-              <span class="star star-2"></span>
-              <span class="star star-3"></span>
-              <span class="star star-4"></span>
-              <span class="star star-5"></span>
-              <span class="star star-6"></span>
-              <span class="star star-7"></span>
-              <span class="star star-8"></span>
-            </label>
-          </div>
-        </div>
-
-        <div id="infos_overlay" class="overlay"></div>
-        <div id="infos">
-          <div id="close-infos" onclick="closeInfos()">X</div>
-          <div class="infos-title">Bienvenue dans Motusma !</div>
-          <div id="infos-title-content">
-            Chaque jour, un nouveau Pokémon fait son apparition, à toi de le trouver. <br>Seuls les Pokémons de la 1ère génération sont présents.<br>
-            Les lettres bien placées sont en <strong>rouge</strong>, les lettres correctes mais mal placées sont en <strong>jaune</strong>, et les lettres incorrectes sont transparentes.<br>(Mêmes règles que <a target="_blank" href="https://sutom.nocle.fr/" class="links"> <strong>sutom</strong></a>).<br><br>
-            <strong>NB : </strong>Les pokémons Nidoran♂ et Nidoran♀ s'appellent respectivement <strong>Nidoranm</strong> et <strong>Nidoranf</strong> dans le jeu, pour des soucis de caractères spéciaux. <br><br>
-          </div>
-          <div class="infos-title">Fonctionnalités :</div>
-          <div id="infos-features-content">
-            <strong>Statistiques : </strong> Graphique montrant les pokémons trouvés en fonction du nombre d'essais, modifier son pseudo. <br><br>
-            <strong>Pokédex : </strong> Le Pokédex recense tous les Pokémons trouvés ou capturés du joueur. Possibilité de voir les informations détaillées des Pokémons, comme leurs statistiques, les dates où le joueur les a rencontrés ou capturés, leurs types ... <br><br>
-            <strong>Résultat : </strong> Consultation et partage du résultat du jour, compte à rebours pour le prochain Pokémon.<br><br>
-
-          </div>
-          <div class="infos-title">Crédits :</div>
-          <div id="infos-credits-content">
-            <a href="https://pokedle.net" class="links" target="_blank">pokedle.net</a>, <a href="https://surtom.yvelin.net/" class="links" target="_blank">UneSo6</a>, <a href="https://dpt.piemontaise.com/" class="links" target="_blank">BeaufBourguignon</a>.
-          </div>
-        </div>
-
-        <div id="stats_overlay" class="overlay"></div>
-        <div id="stats">
-          <div id="close-stats" onclick="closeStats()">X</div>
-
-          <div id="pseudo-container">
-            Pseudo : <p id="pseudo"></p>
-            <button id="changer-pseudo" onclick="openPseudo()">Changer de pseudo</button>
-          </div>
-
-          <div id="date-container">
-            Début de l'aventure : Le <p id="debut-aventure">-</p>
-          </div>
-
-          <div id="container-found-catch">
-            <div id="found">Pokémons vus : <span>0</span></div>
-            <div id="catch">Pokémons attrapés : <span>0</span></div>
-          </div>
-
-          <div id="chart">
-            <canvas id="essaisChart" width="800" height="400"></canvas>
-          </div>
-        </div>
-
-        <div id="pseudo_overlay" class="overlay"></div>
-        <div id="form-changer-pseudo" style="display: none;">
-          <div id="close-pseudo" onClick="closePseudo()">X</div>
-          <form onsubmit="newPseudo(event)" id="input-change-pseudo">
-              <input type="text" id="pseudo-input" value="" maxlength="20">
-              <button type="submit">Valider</button>
-          </form>
-        </div>
-      
-        <div id="results_overlay" class="overlay"></div>
-        <div id="results" style="display: none;">
-            <div id="close-results" onclick="closeResults()">X</div>
-            <h1 id="results-titre">C'est métaphysique</h1>
-            <div id="results-text">Filou !</div>
-            <img src="" alt="Pokémon du jour" id="results-pokemon">
-
-            <div id="share" onclick="share()">Copier le résultat
-              <img src="images/copy.svg" alt="copy" width="40px">
-            </div>
-            
-            <div id="next" style="margin-bottom: 30px; font-size: 20px;">
-              <strong>Prochain Pokémon dans  :</strong>
-            </div>
-            <div class="col">
-              <div>
-                  <input type="text" readonly value="0">
-                  <br/>
-                  <label for="">Heures</label>
-              </div>
-              <div>
-                  <input type="text" readonly value="0">
-                  <br/>
-                  <label for="">Minutes</label>
-              </div>
-              <div>
-                  <input type="text" readonly value="0">
-                  <br/>
-                  <label for="">Secondes</label>
-              </div>
-            </div>
-
-            <div id="results-buttons">
-                <button id="pokedex_after_game" onclick="openPokedex()">Pokédex</button>
-                <button id="stats_after_game" onclick="openStats()">Statistiques</button>
-            </div>
-        </div>
-
-        <div class="containerGrid">
-            <table id="word-grid"></table>
-        </div>
-
-        <div id="text-box"><p>Ce mot n'existe pas, dresseur !</p></div>
-
-      </div>
-      
-      <div id="virtual-keyboard">
-        <div class="keyboard-row">
-          <button class="keyboard-button">Q</button>
-          <button class="keyboard-button">W</button>
-          <button class="keyboard-button">E</button>
-          <button class="keyboard-button">R</button>
-          <button class="keyboard-button">T</button>
-          <button class="keyboard-button">Y</button>
-          <button class="keyboard-button">U</button>
-          <button class="keyboard-button">I</button>
-          <button class="keyboard-button">O</button>
-          <button class="keyboard-button">P</button>
-        </div>
-        <div class="keyboard-row">
-          <button class="keyboard-button">A</button>
-          <button class="keyboard-button">S</button>
-          <button class="keyboard-button">D</button>
-          <button class="keyboard-button">F</button>
-          <button class="keyboard-button">G</button>
-          <button class="keyboard-button">H</button>
-          <button class="keyboard-button">J</button>
-          <button class="keyboard-button">K</button>
-          <button class="keyboard-button">L</button>
-        </div>
-        <div class="keyboard-row">
-          <button class="keyboard-button">Z</button>
-          <button class="keyboard-button">X</button>
-          <button class="keyboard-button">C</button>
-          <button class="keyboard-button">V</button>
-          <button class="keyboard-button">B</button>
-          <button class="keyboard-button">N</button>
-          <button class="keyboard-button">M</button>
-          <button class="keyboard-button" id="backspace-btn">⌫</button>
-          <button class="keyboard-button" id="enter-btn">→</button>
         </div>
       </div>
-      
-        <script src="scripts/motsValides.js"></script>
-        <script src="scripts/script.js?v=4"></script>
-        <script src="scripts/countdown.js"></script>
-        <script src="scripts/chart.js"></script>
-    </body>
+      <div class="right-items">
+        <div id="right-title">Options</div>
+        <div class="bag">
+          <img src="images/help.svg" id="img-help" alt="Help" class="tooltip-trigger" data-tooltip="Comment jouer ?" onclick="openHelp()">
+          <div class="tooltip" aria-hidden="true">
+            <div class="tooltip-inner"></div>
+          </div>
+          <img src="images/no-music.svg" id="img-music" alt="Musique" class="tooltip-trigger" data-tooltip="Musique" onclick="toggleMusic()">
+          <div class="tooltip" aria-hidden="true">
+            <div class="tooltip-inner"></div>
+          </div>
+          <img src="images/sun.svg" id="img-theme" alt="Thème" class="tooltip-trigger" data-tooltip="Thème" onclick="toggleTheme()">
+          <div class="tooltip" aria-hidden="true">
+            <div class="tooltip-inner"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRILLE ET CLAVIER -->
+    <div class="containerGrid">
+        <table id="word-grid"></table>
+    </div>
+    
+    <div id="virtual-keyboard">
+      <div class="keyboard-row">
+        <button class="keyboard-button">Q</button>
+        <button class="keyboard-button">W</button>
+        <button class="keyboard-button">E</button>
+        <button class="keyboard-button">R</button>
+        <button class="keyboard-button">T</button>
+        <button class="keyboard-button">Y</button>
+        <button class="keyboard-button">U</button>
+        <button class="keyboard-button">I</button>
+        <button class="keyboard-button">O</button>
+        <button class="keyboard-button">P</button>
+      </div>
+      <div class="keyboard-row">
+        <button class="keyboard-button">A</button>
+        <button class="keyboard-button">S</button>
+        <button class="keyboard-button">D</button>
+        <button class="keyboard-button">F</button>
+        <button class="keyboard-button">G</button>
+        <button class="keyboard-button">H</button>
+        <button class="keyboard-button">J</button>
+        <button class="keyboard-button">K</button>
+        <button class="keyboard-button">L</button>
+      </div>
+      <div class="keyboard-row">
+        <button class="keyboard-button">Z</button>
+        <button class="keyboard-button">X</button>
+        <button class="keyboard-button">C</button>
+        <button class="keyboard-button">V</button>
+        <button class="keyboard-button">B</button>
+        <button class="keyboard-button">N</button>
+        <button class="keyboard-button">M</button>
+        <button class="keyboard-button" id="backspace-btn">⌫</button>
+        <button class="keyboard-button" id="enter-btn">→</button>
+      </div>
+    </div>
+
+    <!-- MOT INVALIDE -->
+    <div id="mot-invalide"><p>Ce mot n'existe pas, dresseur !</p></div>
+
+    <!-- OVERLAY -->
+    <div id="help-overlay" class="overlay"></div>
+    <div id="help">
+      <div id="close-help" onclick="closeHelp()">X</div>
+      <div class="help-title">Bienvenue dans Motusma !</div>
+      <div id="help-title-content">
+        Chaque jour, un nouveau Pokémon fait son apparition, à toi de le trouver. <br>Seuls les Pokémons de la 1ère génération sont présents.<br>
+        Les lettres bien placées sont en <strong>rouge</strong>, les lettres correctes mais mal placées sont en <strong>jaune</strong>, et les lettres incorrectes sont transparentes.<br>(Mêmes règles que <a target="_blank" href="https://sutom.nocle.fr/" class="links"> <strong>sutom</strong></a>).<br><br>
+        <strong>NB : </strong>Les pokémons Nidoran♂ et Nidoran♀ s'appellent respectivement <strong>Nidoranm</strong> et <strong>Nidoranf</strong> dans le jeu, pour des soucis de caractères spéciaux. <br><br>
+      </div>
+      <div class="help-title">Fonctionnalités :</div>
+      <div id="help-features-content">
+        <strong>Statistiques : </strong> Graphique montrant les pokémons trouvés en fonction du nombre d'essais, modifier son pseudo. <br><br>
+        <strong>Pokédex : </strong> Le Pokédex recense tous les Pokémons trouvés ou capturés du joueur. Possibilité de voir les informations détaillées des Pokémons, comme leurs statistiques, les dates où le joueur les a rencontrés ou capturés, leurs types ... <br><br>
+        <strong>Résultat : </strong> Consultation et partage du résultat du jour, compte à rebours pour le prochain Pokémon.<br><br>
+      </div>
+      <div class="help-title">Crédits :</div>
+      <div id="help-credits-content">
+        <a href="https://pokedle.net" class="links" target="_blank">pokedle.net</a>, <a href="https://surtom.yvelin.net/" class="links" target="_blank">UneSo6</a>, <a href="https://dpt.piemontaise.com/" class="links" target="_blank">BeaufBourguignon</a>.
+      </div>
+    </div>
+
+    <div id="stats-overlay" class="overlay"></div>
+    <div id="stats">
+      <div id="close-stats" onclick="closeStats()">X</div>
+      <div id="pseudo-container">
+        Pseudo : <p id="pseudo"></p>
+        <button id="changer-pseudo" onclick="openPseudo()">Changer de pseudo</button>
+      </div>
+      <div id="date-container">
+        Début de l'aventure : <p id="debut-aventure">-</p>
+      </div>
+      <div id="container-found-catch">
+        <div id="found">Pokémons vus : <span>0</span></div>
+        <div id="catch">Pokémons attrapés : <span>0</span></div>
+      </div>
+      <div id="chart">
+        <canvas id="essaisChart" width="800" height="400"></canvas>
+      </div>
+    </div>
+
+    <div id="pseudo_overlay" class="overlay"></div>
+    <div id="form-changer-pseudo" style="display: none;">
+      <div id="close-pseudo" onClick="closePseudo()">X</div>
+      <form onsubmit="newPseudo(event)" id="input-change-pseudo">
+        <input type="text" id="pseudo-input" value="" maxlength="20">
+        <button type="submit">Valider</button>
+      </form>
+    </div>
+  
+    <div id="results-overlay" class="overlay"></div>
+    <div id="results" style="display: none;">
+      <div id="close-results" onclick="closeResults()">X</div>
+      <h1 id="results-titre">C'est métaphysique</h1>
+      <div id="results-text">Filou !</div>
+      <img src="" alt="Pokémon du jour" id="results-pokemon">
+      <div id="share" onclick="share()">Copier le résultat
+        <img src="images/copy.svg" alt="copy" width="40px">
+      </div>
+      <div id="next" style="margin-bottom: 30px; font-size: 20px;">
+        <strong>Prochain Pokémon dans  :</strong>
+      </div>
+      <div class="col">
+        <div>
+          <input type="text" readonly value="0">
+          <br>
+          <label for="">Heures</label>
+        </div>
+        <div>
+          <input type="text" readonly value="0">
+          <br>
+          <label for="">Minutes</label>
+        </div>
+        <div>
+          <input type="text" readonly value="0">
+          <br>
+          <label for="">Secondes</label>
+        </div>
+      </div>
+      <div id="results-buttons">
+        <button id="pokedex_after_game" onclick="openPokedex()">Pokédex</button>
+        <button id="stats_after_game" onclick="openStats()">Statistiques</button>
+      </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="scripts/motsValides.js"></script>
+    <script src="scripts/script.js?v=5"></script>
+    <script src="scripts/countdown.js"></script>
+    <script src="scripts/chart.js"></script>
+
+  </body>
 </html>
