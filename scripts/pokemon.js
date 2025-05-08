@@ -238,13 +238,5 @@ function displayPokemons(pokemon) {
 }
 
 function closePokedex() {
-  /*main.style.display="none";
-  content.style.display="";
-
-  //on réactive ou non l'écouteur de touches selon si on a déjà terminé la partie du jour ou non
-  if (document.cookie.split(';').some(cookie => cookie.trim().startsWith('motusma-finish-today=')) && document.cookie.split(';').find(cookie => cookie.trim().startsWith('motusma-finish-today=')).split('=')[1] !== btoa('true')) {
-      enableKeydownListener();
-      enableVirtualKeyboard();
-  }*/
   window.location.href = "./";
 }

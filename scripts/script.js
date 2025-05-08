@@ -166,9 +166,9 @@ function updateKeyboardButtonColor(letter) {
     currentRowCells.forEach(cell => {
         if (cell.textContent.toLowerCase() === letter) {
             if (cell.style.backgroundColor === 'rgb(243, 100, 69)') {
-                cellColor = 'rgb(243, 100, 69)'; // Rouge (priorité)
+                cellColor = 'rgb(243, 100, 69)';
             } else if (cell.style.backgroundColor === 'rgb(240, 218, 26)') {
-                cellColor = 'rgb(240, 218, 26)'; // Jaune
+                cellColor = 'rgb(240, 218, 26)';
             }
         }
     });
@@ -176,7 +176,7 @@ function updateKeyboardButtonColor(letter) {
     if (cellColor) {
         keyboardButton.style.backgroundColor = cellColor;
     } else {
-        keyboardButton.style.backgroundColor = '#666666'; // Gris
+        keyboardButton.style.backgroundColor = '#666666';
     }
 }
 
@@ -550,12 +550,6 @@ function updateFinishTodayCookie(cookieName, newValue) {
 }
 
 function openPokedex() {
-    /*disableKeydownListener();
-    disableVirtualKeyboard();
-    main.style.display="flex";
-    content.style.display="none";
-    results.style.display="none";
-    document.getElementById("results-overlay").style.display="none";*/
     window.location.href = "./pokedex.html";
 }
 

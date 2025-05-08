@@ -4,11 +4,14 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Motusma</title>
-      <link rel="stylesheet" href="styles.css?v=3">
+      <link rel="stylesheet" href="styles.css?v=4">
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       <link rel="icon" href="images/motisma.png" type="image/x-icon">
   </head>
   <body>
+
+    <!-- MOT INVALIDE -->
+    <div id="mot-invalide"><p>Ce mot n'existe pas, dresseur !</p></div>
 
     <!-- LOGO D'ACCUEIL-->
     <div id="logo">
@@ -28,7 +31,7 @@
           <div class="tooltip" aria-hidden="true">
             <div class="tooltip-inner"></div>
           </div>
-          <img src="images/pokeball.png" id="pokeball-results" alt="Pokeball" class="tooltip-trigger disabled" data-tooltip="Résultats" onclick="openResults()">
+          <img src="images/pokeball.png" id="pokeball-results" alt="Pokeball" class="tooltip-trigger disabled" data-tooltip="Résultat" onclick="openResults()">
           <div class="tooltip" aria-hidden="true">
             <div class="tooltip-inner"></div>
           </div>
@@ -95,26 +98,23 @@
       </div>
     </div>
 
-    <!-- MOT INVALIDE -->
-    <div id="mot-invalide"><p>Ce mot n'existe pas, dresseur !</p></div>
-
     <!-- OVERLAY -->
     <div id="help-overlay" class="overlay"></div>
     <div id="help">
       <div id="close-help" onclick="closeHelp()">X</div>
       <div class="help-title">Bienvenue dans Motusma !</div>
       <div id="help-title-content">
-        Chaque jour, un nouveau Pokémon fait son apparition, à toi de le trouver. <br>Seuls les Pokémons de la 1ère génération sont présents.<br>
+        Chaque jour, un nouveau Pokémon fait son apparition, à toi de le trouver. <br>Seuls les Pokémon de la 1ère génération sont présents.<br>
         Les lettres bien placées sont en <strong>rouge</strong>, les lettres correctes mais mal placées sont en <strong>jaune</strong>, et les lettres incorrectes sont transparentes.<br>(Mêmes règles que <a target="_blank" href="https://sutom.nocle.fr/" class="links"> <strong>sutom</strong></a>).<br><br>
-        <strong>NB : </strong>Les pokémons Nidoran♂ et Nidoran♀ s'appellent respectivement <strong>Nidoranm</strong> et <strong>Nidoranf</strong> dans le jeu, pour des soucis de caractères spéciaux. <br><br>
+        <strong>NB : </strong>les Pokémon Nidoran♂ et Nidoran♀ s'appellent respectivement <strong>Nidoranm</strong> et <strong>Nidoranf</strong> dans le jeu, pour des soucis de caractères spéciaux. <br><br>
       </div>
-      <div class="help-title">Fonctionnalités :</div>
+      <div class="help-title">Fonctionnalités</div>
       <div id="help-features-content">
-        <strong>Statistiques : </strong> Graphique montrant les pokémons trouvés en fonction du nombre d'essais, modifier son pseudo. <br><br>
-        <strong>Pokédex : </strong> Le Pokédex recense tous les Pokémons trouvés ou capturés du joueur. Possibilité de voir les informations détaillées des Pokémons, comme leurs statistiques, les dates où le joueur les a rencontrés ou capturés, leurs types ... <br><br>
-        <strong>Résultat : </strong> Consultation et partage du résultat du jour, compte à rebours pour le prochain Pokémon.<br><br>
+        <strong>Statistiques : </strong> graphique montrant les Pokémon trouvés en fonction du nombre d'essais, modifier son pseudo. <br><br>
+        <strong>Pokédex : </strong> le Pokédex recense tous les Pokémon trouvés ou capturés du joueur. Possibilité de voir les informations détaillées des Pokémon, comme leurs statistiques, les dates où le joueur les a rencontrés ou capturés, leurs types ... <br><br>
+        <strong>Résultat : </strong> consultation et partage du résultat du jour, compte à rebours pour le prochain Pokémon.<br><br>
       </div>
-      <div class="help-title">Crédits :</div>
+      <div class="help-title">Crédits</div>
       <div id="help-credits-content">
         <a href="https://pokedle.net" class="links" target="_blank">pokedle.net</a>, <a href="https://surtom.yvelin.net/" class="links" target="_blank">UneSo6</a>, <a href="https://dpt.piemontaise.com/" class="links" target="_blank">BeaufBourguignon</a>.
       </div>
@@ -131,8 +131,8 @@
         Début de l'aventure : <p id="debut-aventure">-</p>
       </div>
       <div id="container-found-catch">
-        <div id="found">Pokémons vus : <span>0</span></div>
-        <div id="catch">Pokémons attrapés : <span>0</span></div>
+        <div id="found">Pokémon vus : <span>0</span></div>
+        <div id="catch">Pokémon attrapés : <span>0</span></div>
       </div>
       <div id="chart">
         <canvas id="essaisChart" width="800" height="400"></canvas>
@@ -155,25 +155,23 @@
       <div id="results-text">Filou !</div>
       <img src="/images/motisma.png" alt="Pokémon du jour" id="results-pokemon">
       <div id="share" onclick="share()">Copier le résultat
-        <img src="images/copy.svg" alt="copy" width="40">
+        <img src="images/copy.svg" alt="copy" width="28">
       </div>
-      <div id="next" style="margin-bottom: 30px; font-size: 20px;">
+      <hr>
+      <div id="next">
         <strong>Prochain Pokémon dans  :</strong>
       </div>
       <div class="col">
-        <div>
+        <div class="col-item">
           <input type="text" readonly value="0">
-          <br>
           Heures
         </div>
-        <div>
+        <div class="col-item">
           <input type="text" readonly value="0">
-          <br>
           Minutes
         </div>
-        <div>
+        <div class="col-item">
           <input type="text" readonly value="0">
-          <br>
           Secondes
         </div>
       </div>
@@ -185,7 +183,7 @@
 
     <!-- SCRIPTS -->
     <script src="scripts/motsValides.js"></script>
-    <script src="scripts/script.js?v=5"></script>
+    <script src="scripts/script.js?v=6"></script>
     <script src="scripts/countdown.js"></script>
     <script src="scripts/chart.js"></script>
 
