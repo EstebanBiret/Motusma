@@ -3,5 +3,6 @@
 - voir tous les TODO et codes commentés
 - refactorer le code
 - passer la page index, pokedex et detail sur le site validator w3c 
+- responsive page results + page stats
 
 /!\ Après avoir tout fini, mettre le repo Github en public + faire un README + supprimer ce fichier/!\
