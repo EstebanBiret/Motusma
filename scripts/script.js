@@ -756,6 +756,9 @@ loadPokemonData().then(data => {
     } else { //erreur pittoresque 
         console.error('Impossible de charger les données.');
     }
+}).catch(error => {
+    log("Erreur dans loadPokemonData : " + error);
+    console.error("Erreur loadPokemonData", error);
 });
 
 log("après loadPokemonData")
