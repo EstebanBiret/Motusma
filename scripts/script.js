@@ -319,7 +319,7 @@ function justFinishedGame(hasWon, nbTries) {
 function setFirstRow() {
     const currentRowCells = document.querySelectorAll(`#row-${currentRow} td`); //0 au début
     const todayTriesCookie = getCookie("motusma-today-tries");
-    log(todayTriesCookie);
+
     let allLettersCorrect = true;
 
     const targetLetterCounts = {};
@@ -684,11 +684,6 @@ let tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 1);
 tomorrow.setHours(0, 0, 0, 0);
 
-function log(msg) {
-    const el = document.getElementById('log');
-    el.innerHTML += msg + '<br>';
-}
-
 loadPokemonData().then(data => {
     if (data) {
         pokemonData = data;
@@ -697,7 +692,7 @@ loadPokemonData().then(data => {
         SPAN_CATCH.textContent = localStorage.getItem("motusma-catch") + "/151";
 
         const todayTriesCookie = getCookie("motusma-today-tries");
-        log(todayTriesCookie);
+
         //1ère visite sur le site, on affiche les règles
         if(!localStorage.getItem("motusma-metaphysique")) {
             openHelp();
@@ -706,10 +701,8 @@ loadPokemonData().then(data => {
 
         //on regarde si partie en cours ou pas encore commencée
         if (!todayTriesCookie || todayTriesCookie === "[[], [], [], [], []]") {
-            log("Nouvelle partie")
             newGame();
         } else {
-            log("Partie existante")
             existingGame();
 
         }
@@ -754,11 +747,8 @@ loadPokemonData().then(data => {
         console.error('Impossible de charger les données.');
     }
 }).catch(error => {
-    log("Erreur dans loadPokemonData : " + error);
     console.error("Erreur loadPokemonData", error);
 });
-
-log("après loadPokemonData")
 
 //affichage des tooltips au survol
 function initTooltips() {
