@@ -319,6 +319,7 @@ function justFinishedGame(hasWon, nbTries) {
 function setFirstRow() {
     const currentRowCells = document.querySelectorAll(`#row-${currentRow} td`); //0 au début
     const todayTriesCookie = getCookie("motusma-today-tries");
+    log(todayTriesCookie);
     let allLettersCorrect = true;
 
     const targetLetterCounts = {};
@@ -330,7 +331,7 @@ function setFirstRow() {
         const todayTries = JSON.parse(decodeURIComponent(todayTriesCookie));
 
         currentRowCells.forEach((cell, index) => {
-            const guessedLetter = todayTries[currentRow][index].toUpperCase() || '';
+            const guessedLetter = (todayTries[currentRow][index] || '').toUpperCase();
             cell.textContent = guessedLetter;
 
             // Mettre à jour la couleur du clavier pour chaque lettre
