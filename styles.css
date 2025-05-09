@@ -92,7 +92,7 @@ button {
 #logo-img {
   max-height: 16vmin;
   width: auto;
-  padding-top: 3.5vmin;
+  padding-top: 20px;
 }
 
 #close-stats, #close-pseudo, #close-help, #close-pokedex, #close-pokedex-details, #close-results {
