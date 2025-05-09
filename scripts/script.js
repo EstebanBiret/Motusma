@@ -700,7 +700,7 @@ loadPokemonData().then(data => {
         SPAN_CATCH.textContent = localStorage.getItem("motusma-catch") + "/151";
 
         const todayTriesCookie = getCookie("motusma-today-tries");
-
+        log(todayTriesCookie);
         //1ère visite sur le site, on affiche les règles
         if(!localStorage.getItem("motusma-metaphysique")) {
             openHelp();
@@ -709,11 +709,11 @@ loadPokemonData().then(data => {
 
         //on regarde si partie en cours ou pas encore commencée
         if (!todayTriesCookie || todayTriesCookie === "[[], [], [], [], []]") {
-            newGame();
             log("Nouvelle partie")
+            newGame();
         } else {
-            existingGame();
             log("Partie existante")
+            existingGame();
 
         }
 
