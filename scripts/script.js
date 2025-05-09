@@ -349,7 +349,7 @@ function setFirstRow() {
         });
 
         for (let i = 0; i < targetPokemon.length; i++) {
-            const guessedLetter = (todayTries[currentRow][index] || '').toUpperCase();
+            const guessedLetter = (todayTries[currentRow][i] || '').toUpperCase();
     
             if (currentRowCells[i].style.backgroundColor !== 'rgb(243, 100, 69)' && targetPokemon.toUpperCase().includes(guessedLetter)) {
                 targetLetterCounts[guessedLetter]--;
@@ -688,12 +688,8 @@ function log(msg) {
     const el = document.getElementById('log');
     el.innerHTML += msg + '<br>';
 }
-  
-log("Page chargée");
-log("Demain: " +tomorrow );
 
 loadPokemonData().then(data => {
-    log("Pokémon chargés");
     if (data) {
         pokemonData = data;
         pokemonList = data.map(pokemon => normalizeString(pokemon.name.french.toLowerCase()));
