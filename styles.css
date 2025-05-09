@@ -145,8 +145,8 @@ button {
   gap: 40px;
 }
 
-@media screen and (max-width: 618px) {
-  #navbar{
+@media screen and (max-width: 643px) {
+  /*#navbar{
     display: flex;
     gap: 10px;
     flex-direction: column;
@@ -162,6 +162,97 @@ button {
   .right-items {
     margin-left: 0px!important;
     margin-right: 0px!important;
+  }*/
+
+  #img-open, #img-stats, #pokeball-results, #img-help, #img-music, #img-theme {
+    width: 5vw!important;
+  }
+
+  td {
+    font-size: 1.7vh!important;
+    width: 5.5vh!important;
+    height: 5.5vh!important;
+  }
+
+  .keyboard-button {
+    width: 5vh!important;
+    height: 5vh!important;
+    font-size: 1.3vh!important;
+  }
+}
+@media screen and (max-width: 520px) {
+  td {
+    font-size: 1vh!important;
+    width: 4vh!important;
+    height: 4vh!important;
+  }
+
+  .keyboard-button {
+    width: 3vh!important;
+    height: 3vh!important;
+    font-size: .8vh!important;
+  }
+}
+
+@media screen and (max-width: 434px) {
+  .right-items {
+    margin-right: 35px!important;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .right-items {
+    margin-right: 25px!important;
+  }
+
+  td {
+    font-size: .9vh!important;
+    width: 3.5vh!important;
+    height: 3.5vh!important;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  .right-items {
+    margin-right: 15px!important;
+  }
+
+  td {
+    font-size: .8vh!important;
+    width: 3vh!important;
+    height: 3vh!important;
+  }
+
+  #left-title, #right-title {
+    font-size: 1vh!important;
+  }
+
+  #navbar {
+    gap: 25px!important;
+  }
+}
+
+@media screen and (max-width: 330px) {
+  #navbar {
+    gap: 20px!important;
+  }
+
+  .keyboard-button {
+    width: 2vh!important;
+    height: 2vh!important;
+    font-size: .5vh!important;
+  }
+
+  td {
+    font-size: .6vh!important;
+    width: 2.5vh!important;
+    height: 2.5vh!important;
+  }
+}
+
+@media screen and (max-width: 300px) {
+  #navbar {
+    gap: 10px!important;
   }
 }
 
@@ -188,19 +279,16 @@ button {
 #img-open {
   width: 20vw;
   max-width: 50px;
-  min-width: 50px;
 }
 
 #img-stats {
   width: 20vw;
   max-width: 50px;
-  min-width: 40px;
 }
 
 #pokeball-results {
   width: 20vw;
   max-width: 50px;
-  min-width: 50px;
 }
 
 .disabled {
@@ -221,19 +309,16 @@ button {
 #img-help {
   width: 20vw;
   max-width: 55px;
-  min-width: 50px;
 }
 
 #img-music {
   width: 20vw;
   max-width: 55px;
-  min-width: 50px;
 }
 
 #img-theme {
   width: 20vw;
   max-width: 45px;
-  min-width: 50px;
 }
 
 #img-open, #img-stats, #pokeball-results, #img-help, #img-music, #img-theme {
@@ -293,13 +378,16 @@ td {
 .keyboard-button {
   width: 7vh;
   height: 7vh;
+  font-size: 1.2rem;
   border: 2px solid #000;
   border-radius: 5px;
   background-color: #fff;
-  font-size: 1.2rem;
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: pokemon;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .keyboard-button:hover {
@@ -392,7 +480,7 @@ td {
   padding: 10px;
 }
 
-#pseudo_overlay {
+#pseudo-overlay {
   z-index: 1;
 }
 
