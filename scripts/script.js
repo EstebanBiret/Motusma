@@ -683,6 +683,14 @@ let tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 1);
 tomorrow.setHours(0, 0, 0, 0);
 
+function log(msg) {
+    const el = document.getElementById('log');
+    el.innerHTML += msg + '<br>';
+}
+  
+log("Page chargée");
+log("Demain: " +tomorrow );
+
 loadPokemonData().then(data => {
     if (data) {
         pokemonData = data;
@@ -701,8 +709,11 @@ loadPokemonData().then(data => {
         //on regarde si partie en cours ou pas encore commencée
         if (!todayTriesCookie || todayTriesCookie === "[[], [], [], [], []]") {
             newGame();
+            log("Nouvelle partie")
         } else {
             existingGame();
+            log("Partie existante")
+
         }
 
         //gestion du thème clair ou sombre
