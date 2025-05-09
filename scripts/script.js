@@ -692,6 +692,7 @@ log("Page chargée");
 log("Demain: " +tomorrow );
 
 loadPokemonData().then(data => {
+    log("Pokémon chargés");
     if (data) {
         pokemonData = data;
         pokemonList = data.map(pokemon => normalizeString(pokemon.name.french.toLowerCase()));
@@ -756,6 +757,8 @@ loadPokemonData().then(data => {
         console.error('Impossible de charger les données.');
     }
 });
+
+log("après loadPokemonData")
 
 //affichage des tooltips au survol
 function initTooltips() {
