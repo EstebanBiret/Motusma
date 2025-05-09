@@ -85,16 +85,14 @@ button {
 
 #logo {
   display: flex;
-  align-items: center;
   justify-content: center;
-  justify-items: center;
-  align-content: center;
+  /*TODO voir pk sur tel ça fait énorme*/
+}
 
-  img {
-    max-height: 16vmin;
-    width: auto;
-    margin-top: 20px;
-  }
+#logo-img {
+  max-height: 16vmin;
+  width: auto;
+  padding-top: 3.5vmin;
 }
 
 #close-stats, #close-pseudo, #close-help, #close-pokedex, #close-pokedex-details, #close-results {
