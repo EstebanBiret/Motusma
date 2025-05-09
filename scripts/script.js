@@ -349,7 +349,7 @@ function setFirstRow() {
         });
 
         for (let i = 0; i < targetPokemon.length; i++) {
-            const guessedLetter = todayTries[currentRow][i].toUpperCase() || '';
+            const guessedLetter = (todayTries[currentRow][index] || '').toUpperCase();
     
             if (currentRowCells[i].style.backgroundColor !== 'rgb(243, 100, 69)' && targetPokemon.toUpperCase().includes(guessedLetter)) {
                 targetLetterCounts[guessedLetter]--;
