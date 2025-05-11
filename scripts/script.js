@@ -56,15 +56,6 @@ const RESULTS_TEXT = document.getElementById("results-text");
 MOT_INVALIDE_MODAL.style.visibility = "hidden";
 MOT_INVALIDE_MODAL.style.bottom = "-" + MOT_INVALIDE_MODAL.clientHeight + "px";
 
-//play any sound
-function playSound(soundName, type) {
-    const audio = new Audio('sounds/' + soundName + '.' + type);
-    audio.play();
-    audio.onended = function() {
-        audio.remove();
-    };
-}
-
 function majFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   }
@@ -455,7 +446,6 @@ function normalizeString(str) {
 //fonction pour afficher les résultats quand on vient de finir une partie, gagnante ou non
 function displayResults(pokemonName, sound, title, message) {
     const pkmn_id = getPokemonIdByName(pokemonName);
-    playSound(sound, 'mp3');
     pokeball.classList.remove('disabled');
     RESULTS_TITRE.textContent = title;
     RESULTS_TEXT.textContent = message;
