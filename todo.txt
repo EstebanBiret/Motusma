@@ -3,5 +3,6 @@
 - refactorer le code
 - passer la page index, pokedex et detail sur le site validator w3c 
 - responsive page stats
+- supprimer tous les cookies restants et les mettre dans motusma-infos
 
 /!\ Après avoir tout fini, mettre le repo Github en public + faire un README + supprimer ce fichier/!\

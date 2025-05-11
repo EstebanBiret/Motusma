@@ -60,7 +60,7 @@ function majFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   }
 
-// Fonction pour démarrer ou arrêter la musique
+//démarrer ou arrêter la musique
 function toggleMusic() {
     if (isMusicPlaying) {
         bg_music.volume = 0;
@@ -121,6 +121,31 @@ function getNbFound() {
     }
     return nbFound;
 }
+
+//fermer les modals quand on cliquer à côté
+PSEUDO_OVERLAY.addEventListener('click', function(event) {
+    if (event.target === this) {
+      closePseudo();
+    }
+});
+
+RESULTS_OVERLAY.addEventListener('click', function(event) {
+    if (event.target === this) {
+      closeResults();
+    }
+});
+
+STATS_OVERLAY.addEventListener('click', function(event) {
+    if (event.target === this) {
+      closeStats();
+    }
+});
+
+HELP_OVERLAY.addEventListener('click', function(event) {
+    if (event.target === this) {
+      closeHelp();
+    }
+});
 
 //générer la grille de mots
 function generateWordGrid(wordLength) {

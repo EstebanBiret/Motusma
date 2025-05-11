@@ -86,7 +86,6 @@ button {
 #logo {
   display: flex;
   justify-content: center;
-  /*TODO voir pk sur tel ça fait énorme*/
 }
 
 #logo-img {
@@ -144,24 +143,6 @@ button {
 }
 
 @media screen and (max-width: 643px) {
-  /*#navbar{
-    display: flex;
-    gap: 10px;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .left-items {
-    margin-left: 0px!important;
-    margin-right: 0px!important;
-  }
-
-  .right-items {
-    margin-left: 0px!important;
-    margin-right: 0px!important;
-  }*/
-
   #img-open, #img-stats, #pokeball-results, #img-help, #img-music, #img-theme {
     width: 5vw!important;
   }
