@@ -626,7 +626,7 @@ function closeResults() {
 
 function openPseudo() {
     formPseudo.style.display="flex";
-    PSEUDO_INPUT.value = localStorage.getItem("motusma-pseudo");
+    PSEUDO_INPUT.value = getMotusmaInfoField("pseudo");
     PSEUDO_OVERLAY.style.display="flex";
 }
 
@@ -640,8 +640,8 @@ function newPseudo(event) {
     const newPseudo = PSEUDO_INPUT.value;
 
     if (newPseudo.trim() !== '') {
-        localStorage.setItem("motusma-pseudo", newPseudo);
-        pseudo.textContent = localStorage.getItem("motusma-pseudo");
+        setMotusmaInfoField("pseudo", newPseudo);
+        pseudo.textContent = getMotusmaInfoField("pseudo");
         formPseudo.style.display="none";
         PSEUDO_OVERLAY.style.display="none";
     }
@@ -654,7 +654,7 @@ function toggleTheme() {
     const keyboardButtons = document.querySelectorAll('.keyboard-button');
 
     tds.forEach(td => {
-        if (localStorage.getItem("motusma-theme") === "dark") {
+        if (getMotusmaInfoField("theme") === "dark") {
             td.style.color = '#000';
             td.style.boxShadow ='inset 0 0 0 3px #000';
         } else {
@@ -664,7 +664,7 @@ function toggleTheme() {
     });
 
     keyboardButtons.forEach(button => {
-        if (localStorage.getItem("motusma-theme") === "dark") {
+        if (getMotusmaInfoField("theme") === "dark") {
             button.style.color = '#000';
             button.style.backgroundColor = '#fff';
             button.style.border = '2px solid #000';
@@ -679,13 +679,13 @@ function toggleTheme() {
     });
 
     if (imgTheme.src.includes("sun")) {        
-        localStorage.setItem("motusma-theme", "dark")
+        setMotusmaInfoField("theme", "dark")
         htmlElement.style.backgroundImage = "url('images/night.png')";
         imgTheme.src = "images/moon.svg";
         SAC_TEXT.style.color = '#fff';
         OPTIONS_TEXT.style.color = '#fff';
     } else {
-        localStorage.setItem("motusma-theme", "light")
+        setMotusmaInfoField("theme", "light")
         htmlElement.style.backgroundImage = "url('images/day.png')";
         imgTheme.src = "images/sun.svg";
         SAC_TEXT.style.color = '#000';
@@ -711,80 +711,36 @@ function existingGame() {
     setFirstRow();
 }
 
-// SCRIPT //
+//permet de récupérer un champ des infos
+function getMotusmaInfoField(field) {
+    const rawData = localStorage.getItem("motusma-infos");
+    if (!rawData) return null;
 
-//cookies
-let tomorrow = new Date();
-tomorrow.setDate(tomorrow.getDate() + 1);
-tomorrow.setHours(0, 0, 0, 0);
-
-loadPokemonData().then(data => {
-    if (data) {
-        pokemonData = data;
-        pokemonList = data.map(pokemon => normalizeString(pokemon.name.french.toLowerCase()));
-
-        //données du Pokédex
-        SPAN_FOUND.textContent = getNbFound() + "/151";
-        SPAN_CATCH.textContent = getNbCatch() + "/151";
-
-        const todayTriesCookie = getCookie("motusma-today-tries");
-
-        //1ère visite sur le site, on affiche les règles
-        if(!localStorage.getItem("motusma-metaphysique")) {
-            openHelp();
-            localStorage.setItem("motusma-metaphysique", "nan nan");
-        }
-
-        //on regarde si partie en cours ou pas encore commencée
-        if (!todayTriesCookie || todayTriesCookie === "[[], [], [], [], []]") {
-            newGame();
-        } else {
-            existingGame();
-
-        }
-
-        //gestion du thème clair ou sombre
-        const keyboardButtons = document.querySelectorAll('.keyboard-button');
-
-        if(localStorage.getItem("motusma-theme") === "dark") {
-
-            const tds = document.querySelectorAll('td');
-            tds.forEach(td => {
-                td.style.color = '#fff'; 
-                td.style.boxShadow = 'inset 0 0 0 3px #fff';
-            });
-
-            keyboardButtons.forEach(button => {
-                button.style.color = '#fff';
-                button.style.backgroundColor = '#110644';
-                button.style.border = '2px solid #fff';
-            });
-
-            document.querySelector('html').style.backgroundImage = "url('images/night.png')";
-            imgTheme.src = "images/moon.svg";
-            SAC_TEXT.style.color = '#fff';
-            OPTIONS_TEXT.style.color = '#fff';
-        }
-        else {
-            keyboardButtons.forEach(button => {
-                button.style.color = '#000';
-                button.style.backgroundColor = '#fff';
-                button.style.border = '2px solid #000';
-            });
-        }
-
-        //initialisation du clavier virtuel
-        initVirtualKeyboard();
-
-        //initialisation des tooltips
-        initTooltips();
-
-    } else { //erreur pittoresque 
-        console.error('Impossible de charger les données.');
+    try {
+        const infos = JSON.parse(rawData);
+        return infos[field] ?? null;
+    } catch (e) {
+        console.error("Erreur parsing motusma-infos:", e);
+        return null;
     }
-}).catch(error => {
-    console.error("Erreur loadPokemonData", error);
-});
+}
+
+//permet de maj un champ des infos
+function setMotusmaInfoField(field, value) {
+    let infos = {};
+    const rawData = localStorage.getItem("motusma-infos");
+
+    try {
+        if (rawData) {
+            infos = JSON.parse(rawData);
+        }
+    } catch (e) {
+        console.error("Erreur parsing motusma-infos:", e);
+    }
+
+    infos[field] = value;
+    localStorage.setItem("motusma-infos", JSON.stringify(infos));
+}
 
 //affichage des tooltips au survol
 function initTooltips() {
@@ -891,16 +847,6 @@ function getPokemonIdByName(pokemonName) {
     return null;
 }
 
-if (!localStorage.getItem("motusma-start-journey")) {
-    const currentDate = new Date();
-    const formattedDate = `${currentDate.getDate()} ${moisEnFrancais[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
-    localStorage.setItem("motusma-start-journey", formattedDate);
-}
-
-if (!localStorage.getItem("motusma-pseudo") || localStorage.getItem("motusma-pseudo") === '') {
-    localStorage.setItem("motusma-pseudo", 'Anonyme');
-}
-
 //afficher les résultats si on revient sur le site après avoir terminé la partie du jour (gagnante ou non)
 async function displayResultsComeBack() {
     if (atob(getCookie("motusma-finish-today")) == "true"){
@@ -914,9 +860,6 @@ async function displayResultsComeBack() {
         results.style.display="";
     }
 }
-
-pseudo.textContent = localStorage.getItem("motusma-pseudo");
-debutAventure.textContent = localStorage.getItem("motusma-start-journey");
 
 function updateUserData(isCatch, id, nbTries) {
     let userData = JSON.parse(localStorage.getItem("motusma-data"));
@@ -961,3 +904,90 @@ function updateUserData(isCatch, id, nbTries) {
 }
 
 window.addEventListener('keydown', keydownHandler);
+
+// SCRIPT //
+
+//cookies
+let tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
+tomorrow.setHours(0, 0, 0, 0);
+
+loadPokemonData().then(data => {
+    if (data) {
+        pokemonData = data;
+        pokemonList = data.map(pokemon => normalizeString(pokemon.name.french.toLowerCase()));
+
+        //1ère visite sur le site 
+        if (!localStorage.getItem("motusma-infos")) {
+            const currentDate = new Date();
+            const formattedDate = `${currentDate.getDate()} ${moisEnFrancais[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+
+            const infos = {
+                theme: "light",
+                pseudo: "Anonyme",
+                startJourney: formattedDate,
+            };
+            localStorage.setItem("motusma-infos", JSON.stringify(infos));
+            openHelp();
+        }
+
+        //données du Pokédex
+        SPAN_FOUND.textContent = getNbFound() + "/151";
+        SPAN_CATCH.textContent = getNbCatch() + "/151";
+
+        //données du joueur
+        pseudo.textContent = getMotusmaInfoField("pseudo");
+        debutAventure.textContent = getMotusmaInfoField("startJourney");
+
+        const todayTriesCookie = getCookie("motusma-today-tries");
+
+        //on regarde si partie en cours ou pas encore commencée
+        if (!todayTriesCookie || todayTriesCookie === "[[], [], [], [], []]") {
+            newGame();
+        } else {
+            existingGame();
+
+        }
+
+        //gestion du thème clair ou sombre
+        const keyboardButtons = document.querySelectorAll('.keyboard-button');
+
+        if(getMotusmaInfoField("theme") === "dark") {
+
+            const tds = document.querySelectorAll('td');
+            tds.forEach(td => {
+                td.style.color = '#fff'; 
+                td.style.boxShadow = 'inset 0 0 0 3px #fff';
+            });
+
+            keyboardButtons.forEach(button => {
+                button.style.color = '#fff';
+                button.style.backgroundColor = '#110644';
+                button.style.border = '2px solid #fff';
+            });
+
+            document.querySelector('html').style.backgroundImage = "url('images/night.png')";
+            imgTheme.src = "images/moon.svg";
+            SAC_TEXT.style.color = '#fff';
+            OPTIONS_TEXT.style.color = '#fff';
+        }
+        else {
+            keyboardButtons.forEach(button => {
+                button.style.color = '#000';
+                button.style.backgroundColor = '#fff';
+                button.style.border = '2px solid #000';
+            });
+        }
+
+        //initialisation du clavier virtuel
+        initVirtualKeyboard();
+
+        //initialisation des tooltips
+        initTooltips();
+
+    } else { //erreur pittoresque 
+        console.error('Impossible de charger les données.');
+    }
+}).catch(error => {
+    console.error("Erreur loadPokemonData", error);
+});

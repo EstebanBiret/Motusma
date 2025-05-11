@@ -1,4 +1,3 @@
-- quand on clique à côté d'une modal ou touche échap pressée, on ferme la modal
 - voir tous les TODO et codes commentés
 - refactorer le code
 - passer la page index, pokedex et detail sur le site validator w3c 
