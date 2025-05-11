@@ -192,7 +192,6 @@ function displayPokemons(pokemon) {
     const LIST_ITEM = document.createElement("div");
     LIST_ITEM.className = "list-item";
     let pokemonName = NOMS_TRADUITS[capitalizeFirstLetter(pokemon.name)];
-    //let pokemonImageSrc = `https://raw.githubusercontent.com/pokeapi/sprites/master/sprites/pokemon/other/dream-world/${POKEMON_ID}.svg`;
     let pokemonImageSrc = `/sprites/${POKEMON_ID}.svg`;
     let pokeballElement = '';
     const POKEBALL_IMAGE = 'images/pokeball.png'

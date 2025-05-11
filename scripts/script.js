@@ -25,11 +25,9 @@ const imgTheme = document.getElementById('img-theme');
 const main = document.getElementById("main");
 const results = document.getElementById("results");
 const HELP = document.getElementById("help");
-const content = document.getElementById("page-content");
 const pokeball = document.getElementById("pokeball-results");
 const pseudo = document.getElementById("pseudo");
 const debutAventure = document.getElementById("debut-aventure");
-const music = document.getElementById("img-music");
 const stats = document.getElementById("stats");
 const results_pokemon = document.getElementById("results-pokemon");
 const formPseudo = document.getElementById('form-changer-pseudo');
@@ -905,7 +903,7 @@ function updateUserData(isCatch, id, nbTries) {
 
 window.addEventListener('keydown', keydownHandler);
 
-// SCRIPT //
+// ------- SCRIPT ------- //
 
 //cookies
 let tomorrow = new Date();
