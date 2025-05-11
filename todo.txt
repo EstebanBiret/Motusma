@@ -3,8 +3,6 @@
 - refactorer le code
 - passer la page index, pokedex et detail sur le site validator w3c 
 - responsive page stats
-- retirer sons win et lose
-- retirer les 2 cookies catch et found, et utiliser plutôt motusma-data pour compter
 - dans help, changer l'ordre des fonctionnalités et ajouter musique et thème et parler du clavier virtuel
 
 /!\ Après avoir tout fini, mettre le repo Github en public + faire un README + supprimer ce fichier/!\

@@ -75,6 +75,7 @@ function toggleMusic() {
     IMG_MUSIC.src = isMusicPlaying ? "images/music.svg" : "images/no-music.svg";
 }
 
+//afficher modal mot invalide
 function showModalInvalidWord() {
     MOT_INVALIDE_MODAL.style.visibility = "visible";
     MOT_INVALIDE_MODAL.style.bottom = "20px";
@@ -85,6 +86,7 @@ function showModalInvalidWord() {
     }, 2000);
 }
 
+//charger les données des pokemons
 async function loadPokemonData() {
     try {
         const response = await fetch('bd.json');
@@ -96,6 +98,31 @@ async function loadPokemonData() {
     }
 }
 
+//avoir le nombre de Pokémon attrapés en utilisant motusma-data
+function getNbCatch() {
+    const userData = JSON.parse(localStorage.getItem("motusma-data")) || {};
+    let nbCatch = 0;
+    for (let i = 1; i <= MAX_POKEMON; i++) {
+        if (userData[`pkmn_${i}`] && userData[`pkmn_${i}`].catch) {
+            nbCatch++;
+        }
+    }
+    return nbCatch;
+}
+
+//avoir le nombre de Pokémon vus en utilisant motusma-data
+function getNbFound() {
+    const userData = JSON.parse(localStorage.getItem("motusma-data")) || {};
+    let nbFound = 0;
+    for (let i = 1; i <= MAX_POKEMON; i++) {
+        if (userData[`pkmn_${i}`]) {
+            nbFound++;
+        }
+    }
+    return nbFound;
+}
+
+//générer la grille de mots
 function generateWordGrid(wordLength) {
     const WORD_GRID = document.getElementById('word-grid');
 
@@ -285,23 +312,15 @@ function justFinishedGame(hasWon, nbTries) {
     hasWon ? document.cookie = `${"motusma-nb-tries="}${nbTries}; expires=${tomorrow.toUTCString()}; path=/` : document.cookie = `${"motusma-nb-tries="}${6}; expires=${tomorrow.toUTCString()}; path=/`;
     updateFinishTodayCookie("motusma-finish-today", btoa("true"));
 
-    let pkmn_found = parseInt(localStorage.getItem("motusma-found"), 10) || 0;
-    pkmn_found++;
-    localStorage.setItem("motusma-found", pkmn_found);
-    SPAN_FOUND.textContent = localStorage.getItem("motusma-found") + "/151";
-
-    if(hasWon) {
-        let pkmn_catch = parseInt(localStorage.getItem("motusma-catch"), 10) || 0;
-        pkmn_catch++;
-        localStorage.setItem("motusma-catch", pkmn_catch);
-        SPAN_CATCH.textContent = localStorage.getItem("motusma-catch") + "/151"
-    }
-
     disableKeydownListener();
     disableVirtualKeyboard();
     hasWon ? updateUserData(true, getPokemonIdByName(targetPokemon), nbTries) : updateUserData(false, getPokemonIdByName(targetPokemon), 6);
     updateEssaisChart();
     hasWon ? win(targetPokemon) : lose(targetPokemon);
+
+    //maj les données du pokédex
+    SPAN_FOUND.textContent = getNbFound() + "/151";
+    if(hasWon) SPAN_CATCH.textContent = getNbCatch() + "/151"
 
     return;
 }
@@ -678,8 +697,10 @@ loadPokemonData().then(data => {
     if (data) {
         pokemonData = data;
         pokemonList = data.map(pokemon => normalizeString(pokemon.name.french.toLowerCase()));
-        SPAN_FOUND.textContent = localStorage.getItem("motusma-found") + "/151";
-        SPAN_CATCH.textContent = localStorage.getItem("motusma-catch") + "/151";
+
+        //données du Pokédex
+        SPAN_FOUND.textContent = getNbFound() + "/151";
+        SPAN_CATCH.textContent = getNbCatch() + "/151";
 
         const todayTriesCookie = getCookie("motusma-today-tries");
 
@@ -853,14 +874,6 @@ if (!localStorage.getItem("motusma-start-journey")) {
 
 if (!localStorage.getItem("motusma-pseudo") || localStorage.getItem("motusma-pseudo") === '') {
     localStorage.setItem("motusma-pseudo", 'Anonyme');
-}
-
-if(!localStorage.getItem("motusma-found")) {
-    localStorage.setItem("motusma-found", 0);
-}
-
-if(!localStorage.getItem("motusma-catch")) {
-    localStorage.setItem("motusma-catch", 0);
 }
 
 //afficher les résultats si on revient sur le site après avoir terminé la partie du jour (gagnante ou non)
