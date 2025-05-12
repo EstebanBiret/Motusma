@@ -4,7 +4,7 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Motusma</title>
-      <link rel="stylesheet" href="styles.css?v=8">
+      <link rel="stylesheet" href="styles.css?v=9">
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       <link rel="icon" href="images/motisma.png" type="image/x-icon">
   </head>
@@ -56,11 +56,12 @@
       </div>
     </div>
 
-    <!-- GRILLE ET CLAVIER -->
+    <!-- GRILLE -->
     <div class="containerGrid">
         <table id="word-grid"></table>
     </div>
     
+    <!-- CLAVIER VIRTUEL -->
     <div id="virtual-keyboard">
       <div class="keyboard-row">
         <button class="keyboard-button">Q</button>
@@ -98,7 +99,7 @@
       </div>
     </div>
 
-    <!-- OVERLAY -->
+    <!-- AIDE -->
     <div id="help-overlay" class="overlay"></div>
     <div id="help">
       <div id="close-help" onclick="closeHelp()">X</div>
@@ -124,6 +125,7 @@
       </div>
     </div>
 
+    <!-- STATS -->
     <div id="stats-overlay" class="overlay"></div>
     <div id="stats">
       <div id="close-stats" onclick="closeStats()">X</div>
@@ -139,10 +141,11 @@
         <div id="catch">Pokémon attrapés : <span>0</span></div>
       </div>
       <div id="chart">
-        <canvas id="essaisChart" width="800" height="400"></canvas>
+        <canvas id="essaisChart"></canvas>
       </div>
     </div>
 
+    <!-- CHANGER DE PSEUDO -->
     <div id="pseudo-overlay" class="overlay"></div>
     <div id="form-changer-pseudo" style="display: none;">
       <div id="close-pseudo" onClick="closePseudo()">X</div>
@@ -152,6 +155,7 @@
       </form>
     </div>
   
+    <!-- RESULTATS -->
     <div id="results-overlay" class="overlay"></div>
     <div id="results" style="display: none;">
       <div id="close-results" onclick="closeResults()">X</div>
@@ -189,7 +193,7 @@
     <script src="scripts/motsValides.js"></script>
     <script src="scripts/script.js?v=11"></script>
     <script src="scripts/countdown.js"></script>
-    <script src="scripts/chart.js"></script>
+    <script src="scripts/chart.js?v=2"></script>
 
   </body>
 </html>

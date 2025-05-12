@@ -30,6 +30,8 @@ function updateEssaisChart() {
             type: 'bar',
             data: data,
             options: {
+                maintainAspectRatio: false,
+                responsive: true,
                 scales: {
                     y: {
                         beginAtZero: true,

@@ -123,6 +123,13 @@ button {
   opacity: 1;
 }
 
+.tooltip[aria-hidden="true"] {
+  pointer-events: none;
+  left: -9999px !important;
+  top: -9999px !important;
+  opacity: 0 !important;
+}
+
 .tooltip .tooltip-inner {
   background-color: white;
   border: 3px solid #534e41;
@@ -377,11 +384,13 @@ td {
   cursor: not-allowed;
 }
 
-/* Fenêtre de statistiques & infos */
+/* Fenêtre de statistiques */
 #stats {
   font-size: 15px;
-  padding: 40px;
-  width: 1000px;
+  padding: 20px;
+  width: 100%;
+  max-width: 880px;
+  max-height: 90vh;
   margin: auto;
   display: flex;
   flex-direction: column;
@@ -397,10 +406,8 @@ td {
   top: 50%;
   display: none;
   transform: translate(-50%, -50%);
-  height: max-content;
-  width: max-content;
-  max-width: 50vw;
-  max-height: 100vh;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 #pseudo-container {
@@ -424,29 +431,31 @@ td {
 #form-changer-pseudo {
   position: absolute;
   z-index: 2;
-  font-size: 17px;
-  padding: 8px;
-  width: 500px;
-  height: 250px;
+  font-size: 15px;
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+  max-width: 450px;
+  max-height: 15vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background: #f8f7d8;
-  border: 1px solid white;
+  border: 2px solid white;
   border-radius: 10px;
   box-shadow: 0 1px 0 1px black, inset 0 1px 0 1px black, 0 0 0 1px black, inset 0 0 0 1px black;
   position: absolute;
-  transition: all ease-in-out 0.7s;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
 }
 
 #chart {
-  width: 800px;
-  display: flex;
+  width: 100%;
+  height: 100%;
   margin-top: 30px;
+  aspect-ratio: 2 / 1;
 }
 
 /* Fenêtre changement de pseudo */
@@ -466,11 +475,7 @@ td {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
-  left: 50%;
-  top: 60%;
-  transform: translate(-50%, -60%);
-  position: absolute;
+  gap: 25px;
 }
 
 /* Fenêtre de résultats */
@@ -589,18 +594,31 @@ hr {
 }
 
 @media screen and (max-width: 1000px) {
-  #help {
+  #help, #stats {
     max-width: 80vw;
   }
 }
 
+@media screen and (max-width: 900px) {
+  #stats, #changer-pseudo {
+    font-size: 12px!important;
+  }
+}
+
 @media screen and (max-width: 755px) {
-  .help-title, #results-titre, #next {
+  .help-title, #results-titre, #next, #pseudo-container {
     margin-top: 30px;
   }
 
   #results {
     max-width: 80vw;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  #pseudo-container {
+    flex-direction: column;
+    margin-bottom: 10px;
   }
 }
 
@@ -611,6 +629,22 @@ hr {
 
   .col input {
     font-size: 18px!important;
+  }
+
+  #form-changer-pseudo {
+    max-width: 80vw;
+
+    button {
+      font-size: 12px!important;
+    }
+  }
+
+  #pseudo-input {
+    font-size: 12px!important;
+  }
+
+  #input-change-pseudo {
+    margin-top: 50px;
   }
 }
 
@@ -625,7 +659,7 @@ hr {
 }
 
 @media screen and (max-width: 426px) {
-  #help, #results, #share {
+  #help, #results, #share, #stats {
     font-size: 10px;
   }
 
@@ -639,6 +673,14 @@ hr {
 
   #pokedex_after_game, #stats_after_game {
     font-size: 10px!important;
+  }
+
+  #form-changer-pseudo button{
+    font-size: 8px!important;
+  }
+
+  #pseudo-input {
+    font-size: 8px!important;
   }
 }
 
@@ -655,6 +697,10 @@ hr {
 @media screen and (max-width: 350px) {
   #pokedex_after_game, #stats_after_game {
     font-size: 6px!important;
+  }
+
+  #stats, #changer-pseudo {
+    font-size: 8px!important;
   }
 }
 

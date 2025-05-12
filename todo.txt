@@ -1,6 +1,0 @@
-- passer la page index, pokedex et detail sur le site validator w3c 
-- responsive page stats
-
-- mettre le répo en public
-- faire un README
-- supprimer ce fichier
