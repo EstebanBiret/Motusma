@@ -239,10 +239,10 @@ function chooseRandomPokemon() {
     const month = today.getMonth() + 1;
     const year = today.getFullYear();
 
-    let index = (((dayOfMonth * 4 + month * 7 + year * 13) % 151) + 1 ) * Math.sin(dayOfMonth) * Math.cos(month) * Math.tan(year) * 1000 % 151;
+    let index = (((dayOfMonth * 4 + month * 7 + year * 13) % MAX_POKEMON) + 1 ) * Math.sin(dayOfMonth) * Math.cos(month) * Math.tan(year) * 1000 % MAX_POKEMON;
     index = Math.abs(index); 
     index = Math.round(index);
-    return pokemonList[index];
+    return pokemonList[index-1];
 }
 
 function checkGuess() {
@@ -342,8 +342,8 @@ function justFinishedGame(hasWon, nbTries) {
     hasWon ? win(targetPokemon) : lose(targetPokemon);
 
     //maj les données du pokédex
-    SPAN_FOUND.textContent = getNbFound() + "/151";
-    if(hasWon) SPAN_CATCH.textContent = getNbCatch() + "/151"
+    SPAN_FOUND.textContent = getNbFound() + "/"+ MAX_POKEMON;
+    if(hasWon) SPAN_CATCH.textContent = getNbCatch() + "/"+ MAX_POKEMON;
 
     return;
 }
@@ -930,8 +930,8 @@ loadPokemonData().then(data => {
         }
 
         //données du Pokédex
-        SPAN_FOUND.textContent = getNbFound() + "/151";
-        SPAN_CATCH.textContent = getNbCatch() + "/151";
+        SPAN_FOUND.textContent = getNbFound() + "/"+ MAX_POKEMON;
+        SPAN_CATCH.textContent = getNbCatch() + "/"+ MAX_POKEMON;
 
         //données du joueur
         pseudo.textContent = getMotusmaInfoField("pseudo");
