@@ -373,7 +373,7 @@ function displayPokemonDetails(pokemon) {
     });
 
     if(encountered.catch) {
-      document.querySelector(".captureInfos").textContent = 'Capturé le ' + formatDate(encountered.date) + 'en ' + encountered.tries + ' essai.s !';
+      document.querySelector(".captureInfos").textContent = 'Capturé le ' + formatDate(encountered.date) + ' en ' + encountered.tries + ' essai.s !';
     }
     else {
       document.querySelector(".captureInfos").textContent = 'Rencontré le ' + formatDate(encountered.date);
