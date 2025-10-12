@@ -242,6 +242,8 @@ function chooseRandomPokemon() {
     let index = (((dayOfMonth * 4 + month * 7 + year * 13) % MAX_POKEMON) + 1 ) * Math.sin(dayOfMonth) * Math.cos(month) * Math.tan(year) * 1000 % MAX_POKEMON;
     index = Math.abs(index); 
     index = Math.round(index);
+    if(index === 0) index = 1;
+
     return pokemonList[index-1];
 }
 
