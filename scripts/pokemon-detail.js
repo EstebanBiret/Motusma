@@ -232,7 +232,7 @@ const nomTrad = {
   "Seaking": "Poissoroy",
   "Staryu": "Stari",
   "Starmie": "Staross",
-  "Mr. Mime": "M. Mime",
+  "Mr-mime": "M. Mime",
   "Scyther": "Insécateur",
   "Jynx": "Lippoutou",
   "Electabuzz": "Élektek",

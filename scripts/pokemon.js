@@ -123,7 +123,7 @@ const NOMS_TRADUITS = {
   "Seaking": "Poissoroy",
   "Staryu": "Stari",
   "Starmie": "Staross",
-  "Mr. Mime": "M. Mime",
+  "Mr-mime": "M. Mime",
   "Scyther": "Insécateur",
   "Jynx": "Lippoutou",
   "Electabuzz": "Élektek",
@@ -197,6 +197,8 @@ function displayPokemons(pokemon) {
     const POKEBALL_IMAGE = 'images/pokeball.png'
     let userData = JSON.parse(localStorage.getItem("motusma-data"));
     let encountered = null;
+
+    console.log(pokemon.name, pokemonName, pokemonImageSrc);
 
     if(userData){
       encountered = userData[`pkmn_${POKEMON_ID}`];
