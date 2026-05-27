@@ -4,21 +4,18 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Motusma</title>
-      <link rel="stylesheet" href="styles.css?v=9">
+      <link rel="stylesheet" href="styles.css?v=10">
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       <link rel="icon" href="images/motisma.png" type="image/x-icon">
   </head>
   <body>
 
-    <!-- MOT INVALIDE -->
     <div id="mot-invalide"><p>Ce mot n'existe pas, dresseur !</p></div>
 
-    <!-- LOGO D'ACCUEIL-->
     <div id="logo">
       <img src="images/logo.png" alt="Logo" id="logo-img">
     </div>
 
-    <!-- NAVBAR -->
     <div id="navbar">
       <div class="left-items">
         <div id="left-title">Sac</div>
@@ -56,12 +53,10 @@
       </div>
     </div>
 
-    <!-- GRILLE -->
     <div class="containerGrid">
         <table id="word-grid"></table>
     </div>
     
-    <!-- CLAVIER VIRTUEL -->
     <div id="virtual-keyboard">
       <div class="keyboard-row">
         <button class="keyboard-button">Q</button>
@@ -99,7 +94,6 @@
       </div>
     </div>
 
-    <!-- AIDE -->
     <div id="help-overlay" class="overlay"></div>
     <div id="help">
       <div id="close-help" onclick="closeHelp()">X</div>
@@ -125,7 +119,6 @@
       </div>
     </div>
 
-    <!-- STATS -->
     <div id="stats-overlay" class="overlay"></div>
     <div id="stats">
       <div id="close-stats" onclick="closeStats()">X</div>
@@ -145,7 +138,6 @@
       </div>
     </div>
 
-    <!-- CHANGER DE PSEUDO -->
     <div id="pseudo-overlay" class="overlay"></div>
     <div id="form-changer-pseudo" style="display: none;">
       <div id="close-pseudo" onClick="closePseudo()">X</div>
@@ -155,7 +147,6 @@
       </form>
     </div>
   
-    <!-- RESULTATS -->
     <div id="results-overlay" class="overlay"></div>
     <div id="results" style="display: none;">
       <div id="close-results" onclick="closeResults()">X</div>
@@ -189,11 +180,10 @@
       </div>
     </div>
 
-    <!-- SCRIPTS -->
     <script src="scripts/motsValides.js"></script>
-    <script src="scripts/script.js?v=12"></script>
+    <script src="scripts/script.js?v=13"></script>
     <script src="scripts/countdown.js"></script>
-    <script src="scripts/chart.js?v=2"></script>
+    <script src="scripts/chart.js?v=3"></script>
 
   </body>
 </html>

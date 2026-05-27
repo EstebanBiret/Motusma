@@ -13,7 +13,6 @@ function updateEssaisChart() {
         }
     }
 
-    //si le graphique existe déjà, on le met à jour, sinon on le crée
     if (essaisChart) {
         essaisChart.data.datasets[0].data = essaisCounts;
         essaisChart.update();

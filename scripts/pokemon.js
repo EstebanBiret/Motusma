@@ -157,6 +157,10 @@ const NOMS_TRADUITS = {
 
 let allPokemons = [];
 
+const userData = JSON.parse(localStorage.getItem("motusma-data")) || {};
+const caught = Object.values(userData).filter(p => p.catch === true).length;
+document.getElementById("pokedex-counter").textContent = `[${caught}/${MAX_POKEMON}]`;
+
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
@@ -197,8 +201,6 @@ function displayPokemons(pokemon) {
     const POKEBALL_IMAGE = 'images/pokeball.png'
     let userData = JSON.parse(localStorage.getItem("motusma-data"));
     let encountered = null;
-
-    console.log(pokemon.name, pokemonName, pokemonImageSrc);
 
     if(userData){
       encountered = userData[`pkmn_${POKEMON_ID}`];

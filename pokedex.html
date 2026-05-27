@@ -4,7 +4,7 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Pokédex</title>
-      <link rel="stylesheet" href="styles.css?v=9">
+      <link rel="stylesheet" href="styles.css?v=10">
       <link rel="icon" href="images/pokeball.png" type="image/x-icon">
   </head>
   <body>
@@ -12,9 +12,9 @@
         <header class="header home">
         <div class="container">
             <div class="logo-wrapper">
-            <h1>Pokedex</h1>
-            <div id="close-pokedex" onclick="closePokedex()">X</div>
-            </div>
+              <h1>Pokédex <span id="pokedex-counter" style="font-size: 0.7em; opacity: 0.85;"></span></h1>
+              <div id="close-pokedex" onclick="closePokedex()">X</div>
+          </div>
         </div>
         </header>
         <div class="pokemon-list">
@@ -23,6 +23,6 @@
           </div>
         </div>
     </main>
-    <script src="scripts/pokemon.js?v=5" defer></script>
+    <script src="scripts/pokemon.js?v=6" defer></script>
   </body>
 </html>
