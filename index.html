@@ -18,7 +18,7 @@
       <meta name="twitter:description" content="Devine le Pokémon du jour en 5 essais. Motus + Wordle, version Pokémon !">
       <meta name="twitter:image" content="https://motusma.biret-toscano.fr/assets/images/logo.png">
 
-      <link rel="stylesheet" href="styles.css?v=14">
+      <link rel="stylesheet" href="styles.css?v=15">
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       <link rel="icon" href="assets/images/motisma.png" type="image/x-icon">
   </head>
@@ -159,6 +159,12 @@
         </div>
       </div>
 
+      <div class="save-section">
+        <button id="export-btn" onclick="exportProgress()">Exporter ma progression</button>
+        <button id="import-btn" onclick="triggerImport()">Importer une sauvegarde</button>
+        <input type="file" id="import-file" accept="application/json,.json" style="display: none;" onchange="importProgress(this.files[0]); this.value='';">
+      </div>
+
       <div class="chart-section">
         <h3 class="chart-title">Répartition par nombre d'essais</h3>
         <div id="chart">
@@ -210,8 +216,8 @@
       </div>
     </div>
 
-    <script src="scripts/utils.js?v=3"></script>
-    <script src="scripts/script.js?v=19"></script>
+    <script src="scripts/utils.js?v=4"></script>
+    <script src="scripts/script.js?v=20"></script>
     <script src="scripts/countdown.js"></script>
     <script src="scripts/chart.js?v=5"></script>
 

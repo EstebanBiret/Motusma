@@ -719,6 +719,126 @@ function updateUserData(isCatch, id, attemptCount) {
     localStorage.setItem(STORAGE_KEYS.DATA, JSON.stringify(userData));
 }
 
+const SAVE_FILE_APP = 'motusma';
+const SAVE_FILE_VERSION = 1;
+
+function showNotification(message) {
+    const NOTIF = document.createElement('div');
+    NOTIF.className = 'notification';
+    NOTIF.textContent = message;
+    document.body.appendChild(NOTIF);
+    NOTIF.style.bottom = '-4em';
+    NOTIF.style.opacity = '0';
+    setTimeout(() => { NOTIF.style.bottom = '2em'; NOTIF.style.opacity = '1'; }, 10);
+    setTimeout(() => {
+        NOTIF.style.bottom = '-4em';
+        NOTIF.style.opacity = '0';
+        setTimeout(() => document.body.removeChild(NOTIF), 500);
+    }, 2500);
+}
+
+function exportProgress() {
+    const infos = localStorage.getItem(STORAGE_KEYS.INFOS) || '{}';
+    const data = localStorage.getItem(STORAGE_KEYS.DATA) || '{}';
+
+    const payload = {
+        infos: JSON.parse(infos),
+        data: JSON.parse(data),
+    };
+    const checksum = fnv1aHash(JSON.stringify(payload));
+
+    const fileContent = {
+        app: SAVE_FILE_APP,
+        version: SAVE_FILE_VERSION,
+        exportedAt: new Date().toISOString(),
+        checksum,
+        payload,
+    };
+
+    const blob = new Blob([JSON.stringify(fileContent, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `motusma-sauvegarde-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showNotification('Progression exportée !');
+}
+
+function isValidSaveData(fileContent) {
+    if (!fileContent || typeof fileContent !== 'object') return false;
+    if (fileContent.app !== SAVE_FILE_APP) return false;
+    if (typeof fileContent.checksum !== 'string') return false;
+    if (!fileContent.payload || typeof fileContent.payload !== 'object') return false;
+
+    const { payload } = fileContent;
+    if (!payload.infos || typeof payload.infos !== 'object') return false;
+    if (!payload.data || typeof payload.data !== 'object') return false;
+
+    if (fnv1aHash(JSON.stringify(payload)) !== fileContent.checksum) return false;
+
+    const { pseudo, theme, startJourney } = payload.infos;
+    if (typeof pseudo !== 'string' || pseudo.length === 0 || pseudo.length > 20) return false;
+    if (theme !== 'light' && theme !== 'dark') return false;
+    if (typeof startJourney !== 'string' || startJourney.length === 0) return false;
+
+    for (const [key, entry] of Object.entries(payload.data)) {
+        const match = key.match(/^pkmn_(\d+)$/);
+        if (!match) return false;
+        const keyId = Number(match[1]);
+        if (keyId < 1 || keyId > MAX_POKEMON) return false;
+
+        if (!entry || typeof entry !== 'object') return false;
+        if (entry.id !== keyId) return false;                      
+        if (typeof entry.catch !== 'boolean') return false;
+        if (!Number.isInteger(entry.tries) || entry.tries < 1 || entry.tries > LOSS_SCORE) return false;
+        if (isNaN(new Date(entry.date).getTime())) return false;   
+    }
+
+    return true;
+}
+
+function importProgress(file) {
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        let fileContent;
+        try {
+            fileContent = JSON.parse(event.target.result);
+        } catch (e) {
+            showNotification('Fichier illisible : import annulé.');
+            return;
+        }
+
+        if (!isValidSaveData(fileContent)) {
+            showNotification('Fichier invalide ou corrompu : rien n\'a été importé.');
+            return;
+        }
+
+        const confirmed = window.confirm(
+            'Importer cette sauvegarde remplacera ta progression actuelle. Continuer ?'
+        );
+        if (!confirmed) return;
+
+        localStorage.setItem(STORAGE_KEYS.INFOS, JSON.stringify(fileContent.payload.infos));
+        localStorage.setItem(STORAGE_KEYS.DATA, JSON.stringify(fileContent.payload.data));
+
+        showNotification('Progression importée ! Rechargement...');
+        setTimeout(() => window.location.reload(), 1200);
+    };
+    reader.onerror = () => showNotification('Erreur de lecture du fichier.');
+    reader.readAsText(file);
+}
+
+function triggerImport() {
+    const input = document.getElementById('import-file');
+    if (input) input.click();
+}
+
 window.addEventListener('keydown', keydownHandler);
 
 Promise.all([loadPokemonDb(), loadMotsValides()]).then(([data]) => {
