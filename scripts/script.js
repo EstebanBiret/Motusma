@@ -89,7 +89,7 @@ HELP_OVERLAY.addEventListener('click', function (event) {
 
 function generateWordGrid(wordLength) {
     const WORD_GRID = document.getElementById('word-grid');
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < MAX_ATTEMPTS; i++) {
         const ROW = document.createElement('tr');
         ROW.id = 'row-' + i;
         for (let j = 0; j < wordLength; j++) {
@@ -211,7 +211,7 @@ function checkGuess() {
 
     const attemptCount = currentRow + 1;
     const finishedGame = allLettersCorrect && currentRowCells.length === targetPokemon.length;
-    const lostGame     = !finishedGame && (currentRow + 1 >= 5);
+    const lostGame     = !finishedGame && (currentRow + 1 >= MAX_ATTEMPTS);
 
     if (finishedGame || lostGame) {
         currentRow++;
@@ -237,7 +237,7 @@ function updateKeyboardColorsForWord(word) {
 }
 
 function justFinishedGame(hasWon, attemptCount) {
-    const finalNbTries = hasWon ? attemptCount : 6;
+    const finalNbTries = hasWon ? attemptCount : LOSS_SCORE;
     setCookie(STORAGE_KEYS.NB_TRIES, finalNbTries);
     updateFinishTodayCookie(STORAGE_KEYS.FINISH_TODAY, btoa('true'));
 
@@ -292,7 +292,7 @@ function setFirstRow() {
         currentRow++;
         currentPosition = 1;
 
-        if (currentRow >= 5) {
+        if (currentRow >= MAX_ATTEMPTS) {
             refreshFullKeyboard();
             displayResultsComeBack();
             return;
@@ -319,7 +319,7 @@ function handleInput(key) {
 function share() {
     const attemptCount = getCookie(STORAGE_KEYS.NB_TRIES);
     let text;
-    if (attemptCount === '6') {
+    if (attemptCount === String(LOSS_SCORE)) {
         text = `Je n'ai pas trouvé le Pokémon du jour sur ${window.location.href} :( \n`;
     } else {
         const pluriel = attemptCount === '1' ? '' : 's';
@@ -526,9 +526,22 @@ function toggleTheme() {
     refreshFullKeyboard();
 }
 
+function emptyTriesJSON() {
+    return JSON.stringify(Array.from({ length: MAX_ATTEMPTS }, () => []));
+}
+
+function isEmptyTries(cookieValue) {
+    try {
+        const tries = JSON.parse(decodeURIComponent(cookieValue));
+        return Array.isArray(tries) && tries.every(row => Array.isArray(row) && row.length === 0);
+    } catch (e) {
+        return true;
+    }
+}
+
 function newGame() {
     setCookie(STORAGE_KEYS.FINISH_TODAY, btoa('false'));
-    setCookie(STORAGE_KEYS.TODAY_TRIES, '[[], [], [], [], []]');
+    setCookie(STORAGE_KEYS.TODAY_TRIES, emptyTriesJSON());
 
     targetPokemon = chooseRandomPokemon();
     setCookie(STORAGE_KEYS.ANSWER, btoa(targetPokemon));
@@ -646,7 +659,7 @@ function updateKeyboardButtonColor(letter, maxRow = currentRow) {
 
 function refreshFullKeyboard() {
     let maxRow = 0;
-    for (let row = 0; row < 5; row++) {
+    for (let row = 0; row < MAX_ATTEMPTS; row++) {
         const cells = document.querySelectorAll(`#row-${row} td`);
         const hasContent = Array.from(cells).some(c => c.textContent.trim() !== '');
         if (hasContent) maxRow = row + 1;
@@ -674,7 +687,7 @@ async function displayResultsComeBack() {
     await loadPokemonDb();
     disableKeydownListener();
     disableVirtualKeyboard();
-    if (getCookie(STORAGE_KEYS.NB_TRIES) === '6') {
+    if (getCookie(STORAGE_KEYS.NB_TRIES) === String(LOSS_SCORE)) {
         lose(targetPokemon);
     } else {
         win(targetPokemon);
@@ -727,7 +740,7 @@ Promise.all([loadPokemonDb(), loadMotsValides()]).then(([data]) => {
     journeyStart.textContent = getMotusmaInfoField('startJourney');
 
     const todayTriesCookie = getCookie(STORAGE_KEYS.TODAY_TRIES);
-    if (!todayTriesCookie || todayTriesCookie === '[[], [], [], [], []]') {
+    if (!todayTriesCookie || isEmptyTries(todayTriesCookie)) {
         newGame();
     } else {
         existingGame();

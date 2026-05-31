@@ -18,12 +18,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function loadPokemon(id) {
   try {
     const [pokemon, pokemonSpecies] = await Promise.all([
-      fetch(`https://pokeapi.co/api/v2/pokemon/${id}`).then((res) =>
-        res.json()
-      ),
-      fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`).then((res) =>
-        res.json()
-      ),
+      fetch(`https://pokeapi.co/api/v2/pokemon/${id}`).then((res) => {
+        if (!res.ok) throw new Error(`PokéAPI ${res.status} for pokemon/${id}`);
+        return res.json();
+      }),
+      fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`).then((res) => {
+        if (!res.ok) throw new Error(`PokéAPI ${res.status} for pokemon-species/${id}`);
+        return res.json();
+      }),
     ]);
 
     if (currentPokemonId === id) {
@@ -41,7 +43,7 @@ async function loadPokemon(id) {
           navigatePokemon(id - 1);
         });
       }
-      if (id !== 151) {
+      if (id !== MAX_POKEMON) {
         rightArrow.addEventListener("click", () => {
           navigatePokemon(id + 1);
         });

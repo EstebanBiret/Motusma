@@ -1,4 +1,6 @@
 const MAX_POKEMON = 151;
+const MAX_ATTEMPTS = 5;
+const LOSS_SCORE = MAX_ATTEMPTS + 1;
 
 const COLORS = {
     PLACED:    'rgb(243, 100, 69)',  
