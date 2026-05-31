@@ -55,7 +55,7 @@ async function loadPokemon(id) {
     return true;
   } catch (error) {
     console.error("Error while loading the Pokémon:", error);
-    window.location.href = "index.html";
+    window.location.href = "./index.html";
     return false;
   }
 }
@@ -334,5 +334,5 @@ function saucissonPinard(pokemonSpecies) {
   return "";
 }
 
-function closePokedexDetails() {window.location.href = '/';}
-function backToPokedex() {window.location.href = '/pokedex.html';}
+function closePokedexDetails() { window.location.href = './index.html'; }
+function backToPokedex() { window.location.href = './pokedex.html'; }

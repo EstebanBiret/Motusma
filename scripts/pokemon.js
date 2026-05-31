@@ -57,5 +57,5 @@ function displayPokemons(db) {
 }
 
 function closePokedex() {
-    window.location.href = './';
+    window.location.href = './index.html';
 }

@@ -398,7 +398,7 @@ td {
   margin-top: 20px;
   aspect-ratio: 2 / 1;
 }
-#essaisChart { width: 100% !important; height: 100% !important; }
+#attemptsChart { width: 100% !important; height: 100% !important; }
 
 @media (max-width: 600px) {
   #pseudo-container,
@@ -837,13 +837,3 @@ h4 { font-size: var(--subtitle3-font-size); }
   opacity: 0.1;
 }
 .detail-bg path { fill: var(--grayscale-white); }
-
-div#not-found-message {
-  display: none;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 20px;
-  font-weight: 600;
-}

@@ -593,6 +593,12 @@ function initTooltips() {
         trigger.addEventListener('mouseleave', () => {
             TOOLTIP.setAttribute('aria-hidden', 'true');
         });
+        trigger.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                trigger.click();
+            }
+        });
     });
 }
 
