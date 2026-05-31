@@ -1,160 +1,120 @@
 let pokemonList = [];
-let numRows = 5;
 let targetPokemon;
 let numberOfLetters = 0;
 let currentRow = 0;
 let currentPosition = 1;
-let currentIndex = 1;
 let pokemonData;
+let motsValides = new Set();
 
-const moisEnFrancais = [
-    "janvier", "février", "mars", "avril", "mai", "juin",
-    "juillet", "août", "septembre", "octobre", "novembre", "décembre"
-];
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
+tomorrow.setHours(0, 0, 0, 0);
 
-const TOOLTIPS = document.querySelectorAll('.tooltip-trigger');
+const TOOLTIPS         = document.querySelectorAll('.tooltip-trigger');
+const SAC_TEXT         = document.getElementById('left-title');
+const OPTIONS_TEXT     = document.getElementById('right-title');
+const IMG_MUSIC        = document.getElementById('img-music');
+const MOT_INVALIDE_MODAL = document.getElementById('mot-invalide');
+const imgTheme         = document.getElementById('img-theme');
+const results          = document.getElementById('results');
+const HELP             = document.getElementById('help');
+const pokeball         = document.getElementById('pokeball-results');
+const pseudo           = document.getElementById('pseudo');
+const debutAventure    = document.getElementById('debut-aventure');
+const stats            = document.getElementById('stats');
+const results_pokemon  = document.getElementById('results-pokemon');
+const formPseudo       = document.getElementById('form-changer-pseudo');
+const SPAN_FOUND       = document.querySelector('#found span');
+const SPAN_CATCH       = document.querySelector('#catch span');
+const PSEUDO_OVERLAY   = document.getElementById('pseudo-overlay');
+const RESULTS_OVERLAY  = document.getElementById('results-overlay');
+const STATS_OVERLAY    = document.getElementById('stats-overlay');
+const HELP_OVERLAY     = document.getElementById('help-overlay');
+const PSEUDO_INPUT     = document.getElementById('pseudo-input');
+const RESULTS_TITRE    = document.getElementById('results-titre');
+const RESULTS_TEXT     = document.getElementById('results-text');
 
-const SAC_TEXT = document.getElementById('left-title');
-const OPTIONS_TEXT = document.getElementById('right-title');
-
-const IMG_MUSIC = document.getElementById('img-music');
-
-const MOT_INVALIDE_MODAL = document.getElementById("mot-invalide");
-
-const imgTheme = document.getElementById('img-theme');
-const main = document.getElementById("main");
-const results = document.getElementById("results");
-const HELP = document.getElementById("help");
-const pokeball = document.getElementById("pokeball-results");
-const pseudo = document.getElementById("pseudo");
-const debutAventure = document.getElementById("debut-aventure");
-const stats = document.getElementById("stats");
-const results_pokemon = document.getElementById("results-pokemon");
-const formPseudo = document.getElementById('form-changer-pseudo');
-let bg_music = new Audio('sounds/music.mp3');
+const bg_music = new Audio('sounds/music.mp3');
 bg_music.loop = true;
 let isMusicPlaying = false;
 let musicHasStarted = false;
-const SPAN_FOUND = document.querySelector("#found span");
-const SPAN_CATCH = document.querySelector("#catch span");
-const MAX_POKEMON = 151;
 
-const PSEUDO_OVERLAY = document.getElementById("pseudo-overlay");
-const RESULTS_OVERLAY = document.getElementById("results-overlay");
-const STATS_OVERLAY = document.getElementById("stats-overlay");
-const HELP_OVERLAY = document.getElementById("help-overlay");
-
-const PSEUDO_INPUT = document.getElementById('pseudo-input');
-const RESULTS_TITRE = document.getElementById("results-titre");
-const RESULTS_TEXT = document.getElementById("results-text");
-
-MOT_INVALIDE_MODAL.style.visibility = "hidden";
-MOT_INVALIDE_MODAL.style.bottom = "-" + MOT_INVALIDE_MODAL.clientHeight + "px";
-
-function majFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-  }
+MOT_INVALIDE_MODAL.style.visibility = 'hidden';
+MOT_INVALIDE_MODAL.style.bottom = '-' + MOT_INVALIDE_MODAL.clientHeight + 'px';
 
 function toggleMusic() {
     if (isMusicPlaying) {
         bg_music.volume = 0;
     } else {
-        if(!musicHasStarted) {
+        if (!musicHasStarted) {
             musicHasStarted = true;
-            bg_music.play()
+            bg_music.play();
         }
         bg_music.volume = 1;
     }
     isMusicPlaying = !isMusicPlaying;
-    IMG_MUSIC.src = isMusicPlaying ? "images/music.svg" : "images/no-music.svg";
+    IMG_MUSIC.src = isMusicPlaying ? 'images/music.svg' : 'images/no-music.svg';
 }
 
 function showModalInvalidWord() {
-    MOT_INVALIDE_MODAL.style.visibility = "visible";
-    MOT_INVALIDE_MODAL.style.bottom = "20px";
-
-    setTimeout(function () {
-        MOT_INVALIDE_MODAL.style.bottom = "-" + MOT_INVALIDE_MODAL.clientHeight + "px";
-        MOT_INVALIDE_MODAL.style.visibility = "hidden";
+    MOT_INVALIDE_MODAL.style.visibility = 'visible';
+    MOT_INVALIDE_MODAL.style.bottom = '20px';
+    setTimeout(() => {
+        MOT_INVALIDE_MODAL.style.bottom = '-' + MOT_INVALIDE_MODAL.clientHeight + 'px';
+        MOT_INVALIDE_MODAL.style.visibility = 'hidden';
     }, 2000);
 }
 
 async function loadPokemonData() {
     try {
-        const response = await fetch('bd.json');
-        const data = await response.json();
-        return data;
+        const response = await fetch('scripts/bd.json');
+        return await response.json();
     } catch (error) {
         console.error('Erreur lors du chargement des données:', error);
         return null;
     }
 }
 
-function getNbCatch() {
-    const userData = JSON.parse(localStorage.getItem("motusma-data")) || {};
-    let nbCatch = 0;
-    for (let i = 1; i <= MAX_POKEMON; i++) {
-        if (userData[`pkmn_${i}`] && userData[`pkmn_${i}`].catch) {
-            nbCatch++;
-        }
+async function loadMotsValides() {
+    try {
+        const response = await fetch('scripts/motsValides.json');
+        const arr = await response.json();
+        motsValides = new Set(arr);
+    } catch (error) {
+        console.error('Erreur lors du chargement des mots valides:', error);
+        motsValides = new Set();
     }
-    return nbCatch;
 }
 
-function getNbFound() {
-    const userData = JSON.parse(localStorage.getItem("motusma-data")) || {};
-    let nbFound = 0;
-    for (let i = 1; i <= MAX_POKEMON; i++) {
-        if (userData[`pkmn_${i}`]) {
-            nbFound++;
-        }
-    }
-    return nbFound;
-}
-
-PSEUDO_OVERLAY.addEventListener('click', function(event) {
-    if (event.target === this) {
-      closePseudo();
-    }
+PSEUDO_OVERLAY.addEventListener('click', function (event) {
+    if (event.target === this) closePseudo();
 });
-
-RESULTS_OVERLAY.addEventListener('click', function(event) {
-    if (event.target === this) {
-      closeResults();
-    }
+RESULTS_OVERLAY.addEventListener('click', function (event) {
+    if (event.target === this) closeResults();
 });
-
-STATS_OVERLAY.addEventListener('click', function(event) {
-    if (event.target === this) {
-      closeStats();
-    }
+STATS_OVERLAY.addEventListener('click', function (event) {
+    if (event.target === this) closeStats();
 });
-
-HELP_OVERLAY.addEventListener('click', function(event) {
-    if (event.target === this) {
-      closeHelp();
-    }
+HELP_OVERLAY.addEventListener('click', function (event) {
+    if (event.target === this) closeHelp();
 });
 
 function generateWordGrid(wordLength) {
     const WORD_GRID = document.getElementById('word-grid');
-
     for (let i = 0; i < 5; i++) {
         const ROW = document.createElement('tr');
         ROW.id = 'row-' + i;
-
         for (let j = 0; j < wordLength; j++) {
             const CELL = document.createElement('td');
             CELL.id = 'cell-' + j;
             ROW.appendChild(CELL);
         }
-
         WORD_GRID.appendChild(ROW);
     }
 }
 
 function isValidFrenchWord(word) {
-    return motsValides.includes(word.toLowerCase());
+    return motsValides.has(word.toLowerCase());
 }
 
 function isValidPokemonName(word) {
@@ -175,7 +135,6 @@ function updateGridWithGuess(del, key) {
     }
 
     const cell = currentRowCells[index];
-
     if (key && /^[a-zA-Z]$/.test(key)) {
         cell.textContent = key.toUpperCase();
         currentPosition++;
@@ -188,16 +147,15 @@ function updateGridWithGuess(del, key) {
 
 function chooseRandomPokemon() {
     const today = new Date();
-    const dayOfMonth = today.getDate();
-    const month = today.getMonth() + 1;
-    const year = today.getFullYear();
-
-    let index = (((dayOfMonth * 4 + month * 7 + year * 13) % MAX_POKEMON) + 1 ) * Math.sin(dayOfMonth) * Math.cos(month) * Math.tan(year) * 1000 % MAX_POKEMON;
-    index = Math.abs(index);
-    index = Math.round(index);
-    if(index === 0) index = 1;
-
-    return pokemonList[index-1];
+    let seed = today.getFullYear() * 10000
+             + (today.getMonth() + 1) * 100
+             + today.getDate();
+    seed = (seed ^ 0x9e3779b9) >>> 0;
+    seed = Math.imul(seed ^ (seed >>> 16), 0x85ebca6b) >>> 0;
+    seed = Math.imul(seed ^ (seed >>> 13), 0xc2b2ae35) >>> 0;
+    seed = (seed ^ (seed >>> 16)) >>> 0;
+    const index = seed % MAX_POKEMON;
+    return pokemonList[index];
 }
 
 function checkGuess() {
@@ -205,26 +163,26 @@ function checkGuess() {
     let allLettersCorrect = true;
     let guessedWord = '';
 
-    if(atob(getCookie("motusma-finish-today")) == "true") {
-        return;
-    }
+    if (atob(getCookie(STORAGE_KEYS.FINISH_TODAY)) === 'true') return;
 
     for (const cell of currentRowCells) {
         guessedWord += cell.textContent.toLowerCase();
     }
 
-    if (guessedWord === '' || (!isValidFrenchWord(guessedWord) && !isValidPokemonName(guessedWord) || currentRowCells[targetPokemon.length -1].textContent == '')) {
+    const isIncomplete = currentRowCells[targetPokemon.length - 1].textContent === '';
+    const isUnknown    = !isValidFrenchWord(guessedWord) && !isValidPokemonName(guessedWord);
+    if (guessedWord === '' || isUnknown || isIncomplete) {
         showModalInvalidWord();
         return;
     }
 
-    let todayTriesCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith("motusma-today-tries="));
+    const todayTriesCookie = document.cookie.split(';').find(c =>
+        c.trim().startsWith(STORAGE_KEYS.TODAY_TRIES + '='));
     const todayTries = JSON.parse(decodeURIComponent(todayTriesCookie.split('=')[1]));
-    const currentRowArray = todayTries[currentRow];
     for (let i = 0; i < guessedWord.length; i++) {
-        currentRowArray.push(guessedWord[i]);
+        todayTries[currentRow].push(guessedWord[i]);
     }
-    document.cookie = `motusma-today-tries=${JSON.stringify(todayTries)}; expires=${tomorrow.toUTCString()}; path=/`;
+    document.cookie = `${STORAGE_KEYS.TODAY_TRIES}=${JSON.stringify(todayTries)}; expires=${tomorrow.toUTCString()}; path=/`;
 
     const targetLetterCounts = {};
     for (const letter of targetPokemon) {
@@ -232,153 +190,133 @@ function checkGuess() {
     }
 
     for (let i = 0; i < targetPokemon.length; i++) {
-        const guessedLetter = currentRowCells[i].textContent.toLocaleLowerCase();
-        const targetLetter = targetPokemon[i];
-
-        if (guessedLetter === targetLetter) {
-            currentRowCells[i].style.backgroundColor = 'rgb(243, 100, 69)';
+        const guessedLetter = currentRowCells[i].textContent.toLowerCase();
+        if (guessedLetter === targetPokemon[i]) {
+            currentRowCells[i].style.backgroundColor = COLORS.PLACED;
             targetLetterCounts[guessedLetter]--;
-        }
-        else {
+        } else {
             allLettersCorrect = false;
         }
     }
 
     for (let i = 0; i < targetPokemon.length; i++) {
-        const guessedLetter = currentRowCells[i].textContent.toLocaleLowerCase();
-
-        if (currentRowCells[i].style.backgroundColor !== 'rgb(243, 100, 69)' && targetPokemon.includes(guessedLetter)) {
+        const guessedLetter = currentRowCells[i].textContent.toLowerCase();
+        if (currentRowCells[i].style.backgroundColor !== COLORS.PLACED
+            && targetPokemon.includes(guessedLetter)) {
             targetLetterCounts[guessedLetter]--;
             if (targetLetterCounts[guessedLetter] >= 0) {
-                currentRowCells[i].style.backgroundColor = 'rgb(240, 218, 26)';
+                currentRowCells[i].style.backgroundColor = COLORS.MISPLACED;
             }
         }
     }
 
-    let nbTries = currentRow + 1
+    const nbTries = currentRow + 1;
+    const finishedGame = allLettersCorrect && currentRowCells.length === targetPokemon.length;
+    const lostGame     = !finishedGame && (currentRow + 1 >= 5);
 
-    if (allLettersCorrect && currentRowCells.length === targetPokemon.length) {
+    if (finishedGame || lostGame) {
         currentRow++;
-        for (const letter of 'abcdefghijklmnopqrstuvwxyz') {
-            if (guessedWord.toLowerCase().includes(letter)) {
-                updateKeyboardButtonColor(letter);
-            }
-        }
+        updateKeyboardColorsForWord(guessedWord);
         currentRow--;
 
-        justFinishedGame(true, nbTries);
-        return;
-    }
-
-    else if(currentRow + 1 >= 5) {
-        currentRow++;
-        for (const letter of 'abcdefghijklmnopqrstuvwxyz') {
-            if (guessedWord.toLowerCase().includes(letter)) {
-                updateKeyboardButtonColor(letter);
-            }
-        }
-        currentRow--;
-
-        justFinishedGame(false, nbTries);
+        justFinishedGame(finishedGame, nbTries);
         return;
     }
 
     currentRow++;
     currentPosition = 1;
-    currentIndex = 1;
     numberOfLetters = 0;
-
-    for (const letter of 'abcdefghijklmnopqrstuvwxyz') {
-        if (guessedWord.toLowerCase().includes(letter)) {
-            updateKeyboardButtonColor(letter);
-        }
-    }
-
+    updateKeyboardColorsForWord(guessedWord);
     setFirstLetter();
 }
 
+function updateKeyboardColorsForWord(word) {
+    for (const letter of 'abcdefghijklmnopqrstuvwxyz') {
+        if (word.toLowerCase().includes(letter)) {
+            updateKeyboardButtonColor(letter);
+        }
+    }
+}
+
 function justFinishedGame(hasWon, nbTries) {
-    hasWon ? document.cookie = `${"motusma-nb-tries="}${nbTries}; expires=${tomorrow.toUTCString()}; path=/` : document.cookie = `${"motusma-nb-tries="}${6}; expires=${tomorrow.toUTCString()}; path=/`;
-    updateFinishTodayCookie("motusma-finish-today", btoa("true"));
+    const finalNbTries = hasWon ? nbTries : 6;
+    document.cookie = `${STORAGE_KEYS.NB_TRIES}=${finalNbTries}; expires=${tomorrow.toUTCString()}; path=/`;
+    updateFinishTodayCookie(STORAGE_KEYS.FINISH_TODAY, btoa('true'));
 
     disableKeydownListener();
     disableVirtualKeyboard();
-    hasWon ? updateUserData(true, getPokemonIdByName(targetPokemon), nbTries) : updateUserData(false, getPokemonIdByName(targetPokemon), 6);
+
+    updateUserData(hasWon, getPokemonIdByName(targetPokemon), finalNbTries);
     updateEssaisChart();
-    hasWon ? win(targetPokemon) : lose(targetPokemon);
 
-    SPAN_FOUND.textContent = getNbFound() + "/"+ MAX_POKEMON;
-    if(hasWon) SPAN_CATCH.textContent = getNbCatch() + "/"+ MAX_POKEMON;
+    if (hasWon) {
+        win(targetPokemon);
+    } else {
+        lose(targetPokemon);
+    }
 
-    return;
+    SPAN_FOUND.textContent = getNbFound() + '/' + MAX_POKEMON;
+    if (hasWon) SPAN_CATCH.textContent = getNbCatch() + '/' + MAX_POKEMON;
 }
 
 function setFirstRow() {
     const currentRowCells = document.querySelectorAll(`#row-${currentRow} td`);
-    const todayTriesCookie = getCookie("motusma-today-tries");
+    const todayTriesCookie = getCookie(STORAGE_KEYS.TODAY_TRIES);
 
     let allLettersCorrect = true;
-
     const targetLetterCounts = {};
     for (const letter of targetPokemon.toUpperCase()) {
         targetLetterCounts[letter] = (targetLetterCounts[letter] || 0) + 1;
     }
 
-    if(todayTriesCookie) {
-        const todayTries = JSON.parse(decodeURIComponent(todayTriesCookie));
+    if (!todayTriesCookie) return;
 
-        currentRowCells.forEach((cell, index) => {
-            const guessedLetter = (todayTries[currentRow][index] || '').toUpperCase();
-            cell.textContent = guessedLetter;
+    const todayTries = JSON.parse(decodeURIComponent(todayTriesCookie));
 
-            if (guessedLetter) {
-                updateKeyboardButtonColor(guessedLetter.toLowerCase());
-            }
-            const targetLetter = targetPokemon[index].toUpperCase();
+    currentRowCells.forEach((cell, index) => {
+        const guessedLetter = (todayTries[currentRow][index] || '').toUpperCase();
+        cell.textContent = guessedLetter;
+        if (guessedLetter) updateKeyboardButtonColor(guessedLetter.toLowerCase());
 
-            if (guessedLetter === targetLetter) {
-                cell.style.backgroundColor = 'rgb(243, 100, 69)';
-                targetLetterCounts[guessedLetter]--;
-            } else {
-                allLettersCorrect = false;
-            }
-        });
+        const targetLetter = targetPokemon[index].toUpperCase();
+        if (guessedLetter === targetLetter) {
+            cell.style.backgroundColor = COLORS.PLACED;
+            targetLetterCounts[guessedLetter]--;
+        } else {
+            allLettersCorrect = false;
+        }
+    });
 
-        for (let i = 0; i < targetPokemon.length; i++) {
-            const guessedLetter = (todayTries[currentRow][i] || '').toUpperCase();
-
-            if (currentRowCells[i].style.backgroundColor !== 'rgb(243, 100, 69)' && targetPokemon.toUpperCase().includes(guessedLetter)) {
-                targetLetterCounts[guessedLetter]--;
-                if (targetLetterCounts[guessedLetter] >= 0) {
-                    currentRowCells[i].style.backgroundColor = 'rgb(240, 218, 26)';
-                }
+    for (let i = 0; i < targetPokemon.length; i++) {
+        const guessedLetter = (todayTries[currentRow][i] || '').toUpperCase();
+        if (currentRowCells[i].style.backgroundColor !== COLORS.PLACED
+            && targetPokemon.toUpperCase().includes(guessedLetter)) {
+            targetLetterCounts[guessedLetter]--;
+            if (targetLetterCounts[guessedLetter] >= 0) {
+                currentRowCells[i].style.backgroundColor = COLORS.MISPLACED;
             }
         }
-
-        if(allLettersCorrect) {
-            displayResultsComeBack();
-        }
-
-        else {
-            currentRow++;
-            currentPosition = 1;
-            currentIndex = 1;
-            numberOfLetters = 0;
-
-            if(currentRow>= 5){
-                displayResultsComeBack();
-                return;
-            }
-            else if(todayTries[currentRow].length === 0) {
-                setFirstLetter();
-            }
-            else { 
-                setFirstRow() 
-            }
-        }
-
     }
 
+    if (allLettersCorrect) {
+        displayResultsComeBack();
+        return;
+    }
+
+    currentRow++;
+    currentPosition = 1;
+    numberOfLetters = 0;
+
+    if (currentRow >= 5) {
+        displayResultsComeBack();
+        return;
+    }
+
+    if (todayTries[currentRow].length === 0) {
+        setFirstLetter();
+    } else {
+        setFirstRow();
+    }
 }
 
 function handleInput(key) {
@@ -387,21 +325,20 @@ function handleInput(key) {
             numberOfLetters--;
             updateGridWithGuess(true, key);
         }
-    }
-    else if (/^[a-zA-Z]$/.test(key) && numberOfLetters < targetPokemon.length) {
+    } else if (/^[a-zA-Z]$/.test(key) && numberOfLetters < targetPokemon.length) {
         numberOfLetters++;
         updateGridWithGuess(false, key);
     }
 }
 
 function share() {
-
-    let text = "";
-    if(getCookie("motusma-nb-tries") == "6") {
-        text = "Je n'ai pas trouvé le Pokémon du jour sur " + window.location.href + ' :( \n' ;
-    }
-    else {
-        text = "J'ai trouvé le Pokémon du jour en " + getCookie("motusma-nb-tries") + " essai" + (getCookie("motusma-nb-tries") == "1" ? "" : "s") + " sur " + window.location.href + ' ! \n' ;
+    const nbTries = getCookie(STORAGE_KEYS.NB_TRIES);
+    let text;
+    if (nbTries === '6') {
+        text = `Je n'ai pas trouvé le Pokémon du jour sur ${window.location.href} :( \n`;
+    } else {
+        const pluriel = nbTries === '1' ? '' : 's';
+        text = `J'ai trouvé le Pokémon du jour en ${nbTries} essai${pluriel} sur ${window.location.href} ! \n`;
     }
     navigator.clipboard.writeText(text);
 
@@ -412,38 +349,23 @@ function share() {
 
     NOTIF.style.bottom = '-4em';
     NOTIF.style.opacity = '0';
-
-    setTimeout(function () {
-        NOTIF.style.bottom = '2em';
-        NOTIF.style.opacity = '1';
-    }, 10);
-
-    setTimeout(function () {
-
+    setTimeout(() => { NOTIF.style.bottom = '2em'; NOTIF.style.opacity = '1'; }, 10);
+    setTimeout(() => {
         NOTIF.style.bottom = '-4em';
         NOTIF.style.opacity = '0';
-
-        setTimeout(function () {
-            document.body.removeChild(NOTIF);
-        }, 500);
+        setTimeout(() => document.body.removeChild(NOTIF), 500);
     }, 1000);
 }
 
 function setFirstLetter() {
     const rowCells = document.querySelectorAll(`#row-${currentRow} td`);
     const firstLetterCell = rowCells[0];
-
     firstLetterCell.textContent = targetPokemon[0].toUpperCase();
-    firstLetterCell.style.backgroundColor = 'rgb(243, 100, 69)';
-
+    firstLetterCell.style.backgroundColor = COLORS.PLACED;
     firstLetterCell.contentEditable = false;
 }
 
-function normalizeString(str) {
-    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-}
-
-function displayResults(pokemonName, sound, title, message) {
+function displayResults(pokemonName, title, message) {
     const pkmn_id = getPokemonIdByName(pokemonName);
     pokeball.classList.remove('disabled');
     RESULTS_TITRE.textContent = title;
@@ -453,36 +375,31 @@ function displayResults(pokemonName, sound, title, message) {
 }
 
 function win(pokemonName) {
-    const answer = atob(getCookie("motusma-answer"));
-    const tries = getCookie("motusma-nb-tries");
+    const answer = atob(getCookie(STORAGE_KEYS.ANSWER));
+    const tries = getCookie(STORAGE_KEYS.NB_TRIES);
+    const pluriel = tries === '1' ? '' : 's';
     displayResults(
         pokemonName,
-        'win',
-        "Nom de Zeus !",
-        `Tu as trouvé ${majFirstLetter(answer)} #${getPokemonIdByName(answer)} en ${tries} essai${tries == "1" ? "" : "s"}.`
+        'Nom de Zeus !',
+        `Tu as trouvé ${capitalize(answer)} #${getPokemonIdByName(answer)} en ${tries} essai${pluriel}.`
     );
 }
 
 function lose(pokemonName) {
-    const answer = atob(getCookie("motusma-answer"));
+    const answer = atob(getCookie(STORAGE_KEYS.ANSWER));
     displayResults(
         pokemonName,
-        'lose',
         "Nom d'une pipe en bois !",
-        `Le Pokémon du jour était ${majFirstLetter(answer)} #${getPokemonIdByName(answer)}`
+        `Le Pokémon du jour était ${capitalize(answer)} #${getPokemonIdByName(answer)}`
     );
 }
 
 function keydownHandler(event) {
     const rowCells = document.querySelectorAll(`#row-${currentRow} td`);
-
-    if(rowCells[targetPokemon.length - 1].textContent =='' || event.key == 'Backspace') {
+    if (rowCells[targetPokemon.length - 1].textContent === '' || event.key === 'Backspace') {
         handleInput(event.key);
     }
-
-    if (event.key === 'Enter') {
-        checkGuess();
-    }
+    if (event.key === 'Enter') checkGuess();
 }
 
 function disableKeydownListener() {
@@ -490,8 +407,7 @@ function disableKeydownListener() {
 }
 
 function disableVirtualKeyboard() {
-    const keyboardButtons = document.querySelectorAll('.keyboard-button');
-    keyboardButtons.forEach(button => {
+    document.querySelectorAll('.keyboard-button').forEach(button => {
         button.disabled = true;
         button.style.opacity = '1';
         button.style.cursor = 'pointer';
@@ -503,16 +419,15 @@ function enableKeydownListener() {
 }
 
 function enableVirtualKeyboard() {
-    const keyboardButtons = document.querySelectorAll('.keyboard-button');
-    keyboardButtons.forEach(button => {
+    document.querySelectorAll('.keyboard-button').forEach(button => {
         button.disabled = false;
     });
 }
 
 function getCookie(name) {
     const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
+    for (const c of cookies) {
+        const cookie = c.trim();
         if (cookie.startsWith(name + '=')) {
             return decodeURIComponent(cookie.substring(name.length + 1));
         }
@@ -521,22 +436,22 @@ function getCookie(name) {
 }
 
 function updateFinishTodayCookie(cookieName, newValue) {
-    const cookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith(`${cookieName}=`));
+    const cookie = document.cookie.split(';').find(c =>
+        c.trim().startsWith(`${cookieName}=`));
     if (cookie) {
-        const [name, value] = cookie.split('=');
-        document.cookie = `${name}=${newValue}; expires=${tomorrow.toUTCString()}; path=/`;
+        document.cookie = `${cookieName}=${newValue}; expires=${tomorrow.toUTCString()}; path=/`;
     }
 }
 
 function openPokedex() {
-    window.location.href = "./pokedex.html";
+    window.location.href = './pokedex.html';
 }
 
 function openStats() {
-    stats.style.display="flex";
-    results.style.display="none";
-    RESULTS_OVERLAY.style.display="none";
-    STATS_OVERLAY.style.display="flex";
+    stats.style.display = 'flex';
+    results.style.display = 'none';
+    RESULTS_OVERLAY.style.display = 'none';
+    STATS_OVERLAY.style.display = 'flex';
     disableKeydownListener();
     disableVirtualKeyboard();
 }
@@ -546,13 +461,13 @@ function closeStats() {
         enableKeydownListener();
         enableVirtualKeyboard();
     }
-    stats.style.display='none';
-    STATS_OVERLAY.style.display="none";
+    stats.style.display = 'none';
+    STATS_OVERLAY.style.display = 'none';
 }
 
 function openHelp() {
-    HELP.style.display="flex";
-    HELP_OVERLAY.style.display="flex";
+    HELP.style.display = 'flex';
+    HELP_OVERLAY.style.display = 'flex';
     disableKeydownListener();
     disableVirtualKeyboard();
 }
@@ -562,71 +477,65 @@ function closeHelp() {
         enableKeydownListener();
         enableVirtualKeyboard();
     }
-    HELP.style.display='none';
-    HELP_OVERLAY.style.display="none";
-}
-
-function isGameFinished() {
-    const cookie = getCookie("motusma-finish-today");
-    if (!cookie) return false;
-    try {
-        return atob(cookie) === "true";
-    } catch (e) {
-        return false;
-    }
+    HELP.style.display = 'none';
+    HELP_OVERLAY.style.display = 'none';
 }
 
 function openResults() {
-    results.style.display = "flex";
-    RESULTS_OVERLAY.style.display="flex";
+    results.style.display = 'flex';
+    RESULTS_OVERLAY.style.display = 'flex';
 }
 
 function closeResults() {
-    results.style.display = "none";
-    RESULTS_OVERLAY.style.display="none";
+    results.style.display = 'none';
+    RESULTS_OVERLAY.style.display = 'none';
 }
 
 function openPseudo() {
-    formPseudo.style.display="flex";
-    PSEUDO_INPUT.value = getMotusmaInfoField("pseudo");
-    PSEUDO_OVERLAY.style.display="flex";
+    formPseudo.style.display = 'flex';
+    PSEUDO_INPUT.value = getMotusmaInfoField('pseudo');
+    PSEUDO_OVERLAY.style.display = 'flex';
 }
 
 function closePseudo() {
-    formPseudo.style.display="none";
-    PSEUDO_OVERLAY.style.display="none";
+    formPseudo.style.display = 'none';
+    PSEUDO_OVERLAY.style.display = 'none';
 }
 
 function newPseudo(event) {
     event.preventDefault();
     const newPseudo = PSEUDO_INPUT.value;
-
     if (newPseudo.trim() !== '') {
-        setMotusmaInfoField("pseudo", newPseudo);
-        pseudo.textContent = getMotusmaInfoField("pseudo");
-        formPseudo.style.display="none";
-        PSEUDO_OVERLAY.style.display="none";
+        setMotusmaInfoField('pseudo', newPseudo);
+        pseudo.textContent = getMotusmaInfoField('pseudo');
+        formPseudo.style.display = 'none';
+        PSEUDO_OVERLAY.style.display = 'none';
+    }
+}
+
+function isGameFinished() {
+    const cookie = getCookie(STORAGE_KEYS.FINISH_TODAY);
+    if (!cookie) return false;
+    try {
+        return atob(cookie) === 'true';
+    } catch (e) {
+        return false;
     }
 }
 
 function toggleTheme() {
     const htmlElement = document.querySelector('html');
-
     const tds = document.querySelectorAll('td');
     const keyboardButtons = document.querySelectorAll('.keyboard-button');
+    const isDark = getMotusmaInfoField('theme') === 'dark';
 
     tds.forEach(td => {
-        if (getMotusmaInfoField("theme") === "dark") {
-            td.style.color = '#000';
-            td.style.boxShadow ='inset 0 0 0 3px #000';
-        } else {
-            td.style.color = '#fff';
-            td.style.boxShadow = 'inset 0 0 0 3px #fff';
-        }
+        td.style.color = isDark ? '#000' : '#fff';
+        td.style.boxShadow = isDark ? 'inset 0 0 0 3px #000' : 'inset 0 0 0 3px #fff';
     });
 
     keyboardButtons.forEach(button => {
-        if (getMotusmaInfoField("theme") === "dark") {
+        if (isDark) {
             button.style.color = '#000';
             button.style.backgroundColor = '#fff';
             button.style.border = '2px solid #000';
@@ -635,87 +544,75 @@ function toggleTheme() {
             button.style.backgroundColor = '#110644';
             button.style.border = '2px solid #fff';
         }
-
         updateKeyboardButtonColor(button.textContent.toLowerCase());
     });
 
-    if (imgTheme.src.includes("sun")) {
-        setMotusmaInfoField("theme", "dark")
+    if (imgTheme.src.includes('sun')) {
+        setMotusmaInfoField('theme', 'dark');
         htmlElement.style.backgroundImage = "url('images/night.png')";
-        imgTheme.src = "images/moon.svg";
+        imgTheme.src = 'images/moon.svg';
         SAC_TEXT.style.color = '#fff';
         OPTIONS_TEXT.style.color = '#fff';
     } else {
-        setMotusmaInfoField("theme", "light")
+        setMotusmaInfoField('theme', 'light');
         htmlElement.style.backgroundImage = "url('images/day.png')";
-        imgTheme.src = "images/sun.svg";
+        imgTheme.src = 'images/sun.svg';
         SAC_TEXT.style.color = '#000';
         OPTIONS_TEXT.style.color = '#000';
     }
 }
 
 function newGame() {
-    document.cookie = `${"motusma-finish-today="}${btoa("false")}; expires=${tomorrow.toUTCString()}; path=/`;
-    document.cookie = `${"motusma-today-tries="}${"[[], [], [], [], []]"}; expires=${tomorrow.toUTCString()}; path=/`;
+    document.cookie = `${STORAGE_KEYS.FINISH_TODAY}=${btoa('false')}; expires=${tomorrow.toUTCString()}; path=/`;
+    document.cookie = `${STORAGE_KEYS.TODAY_TRIES}=[[], [], [], [], []]; expires=${tomorrow.toUTCString()}; path=/`;
 
     targetPokemon = chooseRandomPokemon();
-    document.cookie = `${"motusma-answer="}${btoa(targetPokemon)}; expires=${tomorrow}; path=/`;
+    document.cookie = `${STORAGE_KEYS.ANSWER}=${btoa(targetPokemon)}; expires=${tomorrow}; path=/`;
 
     generateWordGrid(targetPokemon.length);
     setFirstLetter();
 }
 
 function existingGame() {
-    targetPokemon = atob(getCookie("motusma-answer"));
+    targetPokemon = atob(getCookie(STORAGE_KEYS.ANSWER));
     generateWordGrid(targetPokemon.length);
     setFirstRow();
 }
 
 function getMotusmaInfoField(field) {
-    const rawData = localStorage.getItem("motusma-infos");
+    const rawData = localStorage.getItem(STORAGE_KEYS.INFOS);
     if (!rawData) return null;
-
     try {
-        const infos = JSON.parse(rawData);
-        return infos[field] ?? null;
+        return JSON.parse(rawData)[field] ?? null;
     } catch (e) {
-        console.error("Erreur parsing motusma-infos:", e);
+        console.error('Erreur parsing motusma-infos:', e);
         return null;
     }
 }
 
 function setMotusmaInfoField(field, value) {
     let infos = {};
-    const rawData = localStorage.getItem("motusma-infos");
-
+    const rawData = localStorage.getItem(STORAGE_KEYS.INFOS);
     try {
-        if (rawData) {
-            infos = JSON.parse(rawData);
-        }
+        if (rawData) infos = JSON.parse(rawData);
     } catch (e) {
-        console.error("Erreur parsing motusma-infos:", e);
+        console.error('Erreur parsing motusma-infos:', e);
     }
-
     infos[field] = value;
-    localStorage.setItem("motusma-infos", JSON.stringify(infos));
+    localStorage.setItem(STORAGE_KEYS.INFOS, JSON.stringify(infos));
 }
 
 function initTooltips() {
     TOOLTIPS.forEach(trigger => {
         const TOOLTIP = trigger.nextElementSibling;
-
         trigger.addEventListener('mouseenter', () => {
-          const TOOLTIP_CONTENT = trigger.getAttribute('data-tooltip');
-          TOOLTIP.querySelector('.tooltip-inner').textContent = TOOLTIP_CONTENT;
-          TOOLTIP.setAttribute('aria-hidden', 'false');
-
-          const RECT = trigger.getBoundingClientRect();
-          const SCROLL_Y = window.scrollY || window.pageYOffset;
-
-          TOOLTIP.style.top = `${RECT.bottom + SCROLL_Y + 5}px`;
-          TOOLTIP.style.left = `${RECT.left + (RECT.width / 2) - (TOOLTIP.offsetWidth / 2)}px`;
+            TOOLTIP.querySelector('.tooltip-inner').textContent = trigger.getAttribute('data-tooltip');
+            TOOLTIP.setAttribute('aria-hidden', 'false');
+            const RECT = trigger.getBoundingClientRect();
+            const SCROLL_Y = window.scrollY || window.pageYOffset;
+            TOOLTIP.style.top  = `${RECT.bottom + SCROLL_Y + 5}px`;
+            TOOLTIP.style.left = `${RECT.left + (RECT.width / 2) - (TOOLTIP.offsetWidth / 2)}px`;
         });
-
         trigger.addEventListener('mouseleave', () => {
             TOOLTIP.setAttribute('aria-hidden', 'true');
         });
@@ -726,18 +623,14 @@ function initVirtualKeyboard() {
     const keyboard = document.getElementById('virtual-keyboard');
     if (!keyboard) return;
 
-    const keyboardButtons = keyboard.querySelectorAll('.keyboard-button');
-
-    keyboardButtons.forEach(button => {
+    keyboard.querySelectorAll('.keyboard-button').forEach(button => {
         button.addEventListener('click', () => {
-            const key = button.textContent;
-            handleVirtualKey(key);
+            handleVirtualKey(button.textContent);
             button.blur();
         });
     });
 
-    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-    for (const letter of alphabet) {
+    for (const letter of 'abcdefghijklmnopqrstuvwxyz') {
         updateKeyboardButtonColor(letter);
     }
 }
@@ -756,19 +649,12 @@ function handleVirtualKey(key) {
 function updateKeyboardButtonColor(letter) {
     const keyboardButtons = document.querySelectorAll('.keyboard-button');
     let keyboardButton = null;
-
     keyboardButtons.forEach(button => {
-        if (button.textContent.toLowerCase() === letter) {
-            keyboardButton = button;
-        }
+        if (button.textContent.toLowerCase() === letter) keyboardButton = button;
     });
-
     if (!keyboardButton) return;
 
-    const current = keyboardButton.style.backgroundColor;
-    if (current === 'rgb(243, 100, 69)') {
-        return;
-    }
+    if (keyboardButton.style.backgroundColor === COLORS.PLACED) return;
 
     let cellColor = null;
     let letterWasGuessed = false;
@@ -778,11 +664,10 @@ function updateKeyboardButtonColor(letter) {
             if (cell.textContent.toLowerCase() === letter) {
                 letterWasGuessed = true;
                 const bg = cell.style.backgroundColor;
-                if (bg === 'rgb(243, 100, 69)') {
-                    cellColor = 'rgb(243, 100, 69)';
-                } else if (bg === 'rgb(240, 218, 26)'
-                           && cellColor !== 'rgb(243, 100, 69)') {
-                    cellColor = 'rgb(240, 218, 26)';
+                if (bg === COLORS.PLACED) {
+                    cellColor = COLORS.PLACED;
+                } else if (bg === COLORS.MISPLACED && cellColor !== COLORS.PLACED) {
+                    cellColor = COLORS.MISPLACED;
                 }
             }
         });
@@ -791,7 +676,7 @@ function updateKeyboardButtonColor(letter) {
     if (cellColor) {
         keyboardButton.style.backgroundColor = cellColor;
     } else if (letterWasGuessed) {
-        keyboardButton.style.backgroundColor = '#bdbdbd';
+        keyboardButton.style.backgroundColor = COLORS.ABSENT;
     }
 }
 
@@ -801,145 +686,102 @@ function getPokemonIdByName(pokemonName) {
         return null;
     }
     for (const pokemon of pokemonData) {
-      if (normalizeString(pokemon.name.french.toLowerCase()) === pokemonName) {
-        return pokemon.id;
-      }
+        if (normalizeString(pokemon.name.french.toLowerCase()) === pokemonName) {
+            return pokemon.id;
+        }
     }
     return null;
 }
 
 async function displayResultsComeBack() {
-    if (atob(getCookie("motusma-finish-today")) == "true"){
-        await loadPokemonData();
-        disableKeydownListener();
-        disableVirtualKeyboard();
-        if(getCookie("motusma-nb-tries") == "6") {
-            lose(targetPokemon);
-        }
-        else {
-            win(targetPokemon);
-        }
-        results.style.display="";
+    if (atob(getCookie(STORAGE_KEYS.FINISH_TODAY)) !== 'true') return;
+    await loadPokemonData();
+    disableKeydownListener();
+    disableVirtualKeyboard();
+    if (getCookie(STORAGE_KEYS.NB_TRIES) === '6') {
+        lose(targetPokemon);
+    } else {
+        win(targetPokemon);
     }
+    results.style.display = '';
 }
 
 function updateUserData(isCatch, id, nbTries) {
-    let userData = JSON.parse(localStorage.getItem("motusma-data"));
+    const userData = JSON.parse(localStorage.getItem(STORAGE_KEYS.DATA)) || {};
+    const existingPokemon = userData[`pkmn_${id}`];
+    const newPokemon = {
+        id,
+        catch: isCatch,
+        date: new Date(),
+        tries: nbTries
+    };
 
-    if (!userData){
-        userData = {};
-    }
+    if (existingPokemon && nbTries >= existingPokemon.tries) return;
 
-    const newPokemonId = id;
-    const newPokemonCatch = isCatch;
-    const newPokemonDate = new Date();
-    const newPokemonTries = nbTries;
-
-    const existingPokemon = userData[`pkmn_${newPokemonId}`];
-
-    if (existingPokemon) {
-        if (newPokemonTries < existingPokemon.tries){
-
-            const newPokemon = {
-                id: newPokemonId,
-                catch: newPokemonCatch,
-                date: newPokemonDate,
-                tries: newPokemonTries
-            };
-
-            userData[`pkmn_${newPokemonId}`] = newPokemon;
-            localStorage.setItem("motusma-data", JSON.stringify(userData));
-        }
-    }
-    else {
-
-        const newPokemon = {
-            id: newPokemonId,
-            catch: newPokemonCatch,
-            date: newPokemonDate,
-            tries: newPokemonTries
-        };
-
-        userData[`pkmn_${newPokemonId}`] = newPokemon;
-        localStorage.setItem("motusma-data", JSON.stringify(userData));
-    }
+    userData[`pkmn_${id}`] = newPokemon;
+    localStorage.setItem(STORAGE_KEYS.DATA, JSON.stringify(userData));
 }
 
 window.addEventListener('keydown', keydownHandler);
 
-let tomorrow = new Date();
-tomorrow.setDate(tomorrow.getDate() + 1);
-tomorrow.setHours(0, 0, 0, 0);
-
-loadPokemonData().then(data => {
-    if (data) {
-        pokemonData = data;
-        pokemonList = data.map(pokemon => normalizeString(pokemon.name.french.toLowerCase()));
-
-        if (!localStorage.getItem("motusma-infos")) {
-            const currentDate = new Date();
-            const formattedDate = `${currentDate.getDate()} ${moisEnFrancais[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
-
-            const infos = {
-                theme: "light",
-                pseudo: "Anonyme",
-                startJourney: formattedDate,
-            };
-            localStorage.setItem("motusma-infos", JSON.stringify(infos));
-            openHelp();
-        }
-
-        SPAN_FOUND.textContent = getNbFound() + "/"+ MAX_POKEMON;
-        SPAN_CATCH.textContent = getNbCatch() + "/"+ MAX_POKEMON;
-
-        pseudo.textContent = getMotusmaInfoField("pseudo");
-        debutAventure.textContent = getMotusmaInfoField("startJourney");
-
-        const todayTriesCookie = getCookie("motusma-today-tries");
-
-        if (!todayTriesCookie || todayTriesCookie === "[[], [], [], [], []]") {
-            newGame();
-        } else {
-            existingGame();
-
-        }
-
-        const keyboardButtons = document.querySelectorAll('.keyboard-button');
-
-        if(getMotusmaInfoField("theme") === "dark") {
-
-            const tds = document.querySelectorAll('td');
-            tds.forEach(td => {
-                td.style.color = '#fff';
-                td.style.boxShadow = 'inset 0 0 0 3px #fff';
-            });
-
-            keyboardButtons.forEach(button => {
-                button.style.color = '#fff';
-                button.style.backgroundColor = '#110644';
-                button.style.border = '2px solid #fff';
-            });
-
-            document.querySelector('html').style.backgroundImage = "url('images/night.png')";
-            imgTheme.src = "images/moon.svg";
-            SAC_TEXT.style.color = '#fff';
-            OPTIONS_TEXT.style.color = '#fff';
-        }
-        else {
-            keyboardButtons.forEach(button => {
-                button.style.color = '#000';
-                button.style.backgroundColor = '#fff';
-                button.style.border = '2px solid #000';
-            });
-        }
-
-        initVirtualKeyboard();
-
-        initTooltips();
-
-    } else { 
+Promise.all([loadPokemonData(), loadMotsValides()]).then(([data]) => {
+    if (!data) {
         console.error('Impossible de charger les données.');
+        return;
     }
+
+    pokemonData = data;
+    pokemonList = data.map(p => normalizeString(p.name.french.toLowerCase()));
+
+    if (!localStorage.getItem(STORAGE_KEYS.INFOS)) {
+        const now = new Date();
+        const formattedDate = `${now.getDate()} ${MOIS_FR[now.getMonth()]} ${now.getFullYear()}`;
+        localStorage.setItem(STORAGE_KEYS.INFOS, JSON.stringify({
+            theme: 'light',
+            pseudo: 'Anonyme',
+            startJourney: formattedDate,
+        }));
+        openHelp();
+    }
+
+    SPAN_FOUND.textContent = getNbFound() + '/' + MAX_POKEMON;
+    SPAN_CATCH.textContent = getNbCatch() + '/' + MAX_POKEMON;
+
+    pseudo.textContent = getMotusmaInfoField('pseudo');
+    debutAventure.textContent = getMotusmaInfoField('startJourney');
+
+    const todayTriesCookie = getCookie(STORAGE_KEYS.TODAY_TRIES);
+    if (!todayTriesCookie || todayTriesCookie === '[[], [], [], [], []]') {
+        newGame();
+    } else {
+        existingGame();
+    }
+
+    const keyboardButtons = document.querySelectorAll('.keyboard-button');
+    if (getMotusmaInfoField('theme') === 'dark') {
+        document.querySelectorAll('td').forEach(td => {
+            td.style.color = '#fff';
+            td.style.boxShadow = 'inset 0 0 0 3px #fff';
+        });
+        keyboardButtons.forEach(button => {
+            button.style.color = '#fff';
+            button.style.backgroundColor = '#110644';
+            button.style.border = '2px solid #fff';
+        });
+        document.querySelector('html').style.backgroundImage = "url('images/night.png')";
+        imgTheme.src = 'images/moon.svg';
+        SAC_TEXT.style.color = '#fff';
+        OPTIONS_TEXT.style.color = '#fff';
+    } else {
+        keyboardButtons.forEach(button => {
+            button.style.color = '#000';
+            button.style.backgroundColor = '#fff';
+            button.style.border = '2px solid #000';
+        });
+    }
+
+    initVirtualKeyboard();
+    initTooltips();
 }).catch(error => {
-    console.error("Erreur loadPokemonData", error);
+    console.error('Erreur de chargement:', error);
 });

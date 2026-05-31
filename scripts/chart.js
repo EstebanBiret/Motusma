@@ -1,7 +1,7 @@
 let essaisChart;
 
 function updateEssaisChart() {
-    const userData = JSON.parse(localStorage.getItem("motusma-data")) || {};
+    const userData = JSON.parse(localStorage.getItem(STORAGE_KEYS.DATA)) || {};
 
     const essaisCounts = [0, 0, 0, 0, 0, 0];
     for (const key in userData) {
