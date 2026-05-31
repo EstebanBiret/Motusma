@@ -29,7 +29,7 @@ Retrouve chaque jour un nouveau Pokémon de la première génération à deviner
 - 📊 Statistiques de jeu détaillées
 - 🗃️ Résultats journaliers consultables
 - 🔎 Pokédex avec Pokémon vus et attrapés
-- 💾 Sauvegarde de la progression via `localStorage` et `cookies`
+- 💾 Sauvegarde de la progression via `localStorage` et `cookies`, possibilité d'exporter et d'importer sa sauvegarde
 
 ---
 
