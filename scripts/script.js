@@ -1,6 +1,6 @@
 let pokemonList = [];
 let targetPokemon;
-let numberOfLetters = 0;
+
 let currentRow = 0;
 let currentPosition = 1;
 let pokemonData;
@@ -11,8 +11,6 @@ tomorrow.setDate(tomorrow.getDate() + 1);
 tomorrow.setHours(0, 0, 0, 0);
 
 const TOOLTIPS         = document.querySelectorAll('.tooltip-trigger');
-const SAC_TEXT         = document.getElementById('left-title');
-const OPTIONS_TEXT     = document.getElementById('right-title');
 const IMG_MUSIC        = document.getElementById('img-music');
 const MOT_INVALIDE_MODAL = document.getElementById('mot-invalide');
 const imgTheme         = document.getElementById('img-theme');
@@ -225,7 +223,6 @@ function checkGuess() {
 
     currentRow++;
     currentPosition = 1;
-    numberOfLetters = 0;
     updateKeyboardColorsForWord(guessedWord);
     setFirstLetter();
 }
@@ -260,73 +257,71 @@ function justFinishedGame(hasWon, nbTries) {
 }
 
 function setFirstRow() {
-    const currentRowCells = document.querySelectorAll(`#row-${currentRow} td`);
     const todayTriesCookie = getCookie(STORAGE_KEYS.TODAY_TRIES);
-
-    let allLettersCorrect = true;
-    const targetLetterCounts = {};
-    for (const letter of targetPokemon.toUpperCase()) {
-        targetLetterCounts[letter] = (targetLetterCounts[letter] || 0) + 1;
-    }
-
     if (!todayTriesCookie) return;
-
     const todayTries = JSON.parse(decodeURIComponent(todayTriesCookie));
 
-    currentRowCells.forEach((cell, index) => {
-        const guessedLetter = (todayTries[currentRow][index] || '').toUpperCase();
-        cell.textContent = guessedLetter;
-        if (guessedLetter) updateKeyboardButtonColor(guessedLetter.toLowerCase());
+    while (true) {
+        const currentRowCells = document.querySelectorAll(`#row-${currentRow} td`);
 
-        const targetLetter = targetPokemon[index].toUpperCase();
-        if (guessedLetter === targetLetter) {
-            cell.style.backgroundColor = COLORS.PLACED;
-            targetLetterCounts[guessedLetter]--;
-        } else {
-            allLettersCorrect = false;
+        let allLettersCorrect = true;
+        const targetLetterCounts = {};
+        for (const letter of targetPokemon.toUpperCase()) {
+            targetLetterCounts[letter] = (targetLetterCounts[letter] || 0) + 1;
         }
-    });
 
-    for (let i = 0; i < targetPokemon.length; i++) {
-        const guessedLetter = (todayTries[currentRow][i] || '').toUpperCase();
-        if (currentRowCells[i].style.backgroundColor !== COLORS.PLACED
-            && targetPokemon.toUpperCase().includes(guessedLetter)) {
-            targetLetterCounts[guessedLetter]--;
-            if (targetLetterCounts[guessedLetter] >= 0) {
-                currentRowCells[i].style.backgroundColor = COLORS.MISPLACED;
+        currentRowCells.forEach((cell, index) => {
+            const guessedLetter = (todayTries[currentRow][index] || '').toUpperCase();
+            cell.textContent = guessedLetter;
+
+            if (guessedLetter === targetPokemon[index].toUpperCase()) {
+                cell.style.backgroundColor = COLORS.PLACED;
+                targetLetterCounts[guessedLetter]--;
+            } else {
+                allLettersCorrect = false;
+            }
+        });
+
+        for (let i = 0; i < targetPokemon.length; i++) {
+            const guessedLetter = (todayTries[currentRow][i] || '').toUpperCase();
+            if (currentRowCells[i].style.backgroundColor !== COLORS.PLACED
+                && targetPokemon.toUpperCase().includes(guessedLetter)) {
+                targetLetterCounts[guessedLetter]--;
+                if (targetLetterCounts[guessedLetter] >= 0) {
+                    currentRowCells[i].style.backgroundColor = COLORS.MISPLACED;
+                }
             }
         }
-    }
 
-    if (allLettersCorrect) {
-        displayResultsComeBack();
-        return;
-    }
+        if (allLettersCorrect) {
+            refreshFullKeyboard();
+            displayResultsComeBack();
+            return;
+        }
 
-    currentRow++;
-    currentPosition = 1;
-    numberOfLetters = 0;
+        currentRow++;
+        currentPosition = 1;
 
-    if (currentRow >= 5) {
-        displayResultsComeBack();
-        return;
-    }
+        if (currentRow >= 5) {
+            refreshFullKeyboard();
+            displayResultsComeBack();
+            return;
+        }
 
-    if (todayTries[currentRow].length === 0) {
-        setFirstLetter();
-    } else {
-        setFirstRow();
+        if (todayTries[currentRow].length === 0) {
+            refreshFullKeyboard();
+            setFirstLetter();
+            return;
+        }
     }
 }
 
 function handleInput(key) {
     if (key === 'Backspace' || key === 'backspace') {
         if (currentPosition > 1) {
-            numberOfLetters--;
             updateGridWithGuess(true, key);
         }
-    } else if (/^[a-zA-Z]$/.test(key) && numberOfLetters < targetPokemon.length) {
-        numberOfLetters++;
+    } else if (/^[a-zA-Z]$/.test(key) && currentPosition < targetPokemon.length) {
         updateGridWithGuess(false, key);
     }
 }
@@ -524,42 +519,17 @@ function isGameFinished() {
 }
 
 function toggleTheme() {
-    const htmlElement = document.querySelector('html');
-    const tds = document.querySelectorAll('td');
-    const keyboardButtons = document.querySelectorAll('.keyboard-button');
-    const isDark = getMotusmaInfoField('theme') === 'dark';
+    const isDark = getMotusmaInfoField('theme') !== 'dark';
 
-    tds.forEach(td => {
-        td.style.color = isDark ? '#000' : '#fff';
-        td.style.boxShadow = isDark ? 'inset 0 0 0 3px #000' : 'inset 0 0 0 3px #fff';
+    document.documentElement.classList.toggle('dark', isDark);
+    setMotusmaInfoField('theme', isDark ? 'dark' : 'light');
+    imgTheme.src = isDark ? 'images/moon.svg' : 'images/sun.svg';
+
+    document.querySelectorAll('.keyboard-button').forEach(button => {
+        button.style.backgroundColor = '';
+        button.style.color = '';
     });
-
-    keyboardButtons.forEach(button => {
-        if (isDark) {
-            button.style.color = '#000';
-            button.style.backgroundColor = '#fff';
-            button.style.border = '2px solid #000';
-        } else {
-            button.style.color = '#fff';
-            button.style.backgroundColor = '#110644';
-            button.style.border = '2px solid #fff';
-        }
-        updateKeyboardButtonColor(button.textContent.toLowerCase());
-    });
-
-    if (imgTheme.src.includes('sun')) {
-        setMotusmaInfoField('theme', 'dark');
-        htmlElement.style.backgroundImage = "url('images/night.png')";
-        imgTheme.src = 'images/moon.svg';
-        SAC_TEXT.style.color = '#fff';
-        OPTIONS_TEXT.style.color = '#fff';
-    } else {
-        setMotusmaInfoField('theme', 'light');
-        htmlElement.style.backgroundImage = "url('images/day.png')";
-        imgTheme.src = 'images/sun.svg';
-        SAC_TEXT.style.color = '#000';
-        OPTIONS_TEXT.style.color = '#000';
-    }
+    refreshFullKeyboard();
 }
 
 function newGame() {
@@ -646,7 +616,7 @@ function handleVirtualKey(key) {
     }
 }
 
-function updateKeyboardButtonColor(letter) {
+function updateKeyboardButtonColor(letter, maxRow = currentRow) {
     const keyboardButtons = document.querySelectorAll('.keyboard-button');
     let keyboardButton = null;
     keyboardButtons.forEach(button => {
@@ -658,7 +628,7 @@ function updateKeyboardButtonColor(letter) {
 
     let cellColor = null;
     let letterWasGuessed = false;
-    for (let row = 0; row < currentRow; row++) {
+    for (let row = 0; row < maxRow; row++) {
         const rowCells = document.querySelectorAll(`#row-${row} td`);
         rowCells.forEach(cell => {
             if (cell.textContent.toLowerCase() === letter) {
@@ -677,6 +647,18 @@ function updateKeyboardButtonColor(letter) {
         keyboardButton.style.backgroundColor = cellColor;
     } else if (letterWasGuessed) {
         keyboardButton.style.backgroundColor = COLORS.ABSENT;
+    }
+}
+
+function refreshFullKeyboard() {
+    let maxRow = 0;
+    for (let row = 0; row < 5; row++) {
+        const cells = document.querySelectorAll(`#row-${row} td`);
+        const hasContent = Array.from(cells).some(c => c.textContent.trim() !== '');
+        if (hasContent) maxRow = row + 1;
+    }
+    for (const letter of 'abcdefghijklmnopqrstuvwxyz') {
+        updateKeyboardButtonColor(letter, maxRow);
     }
 }
 
@@ -757,27 +739,9 @@ Promise.all([loadPokemonData(), loadMotsValides()]).then(([data]) => {
         existingGame();
     }
 
-    const keyboardButtons = document.querySelectorAll('.keyboard-button');
     if (getMotusmaInfoField('theme') === 'dark') {
-        document.querySelectorAll('td').forEach(td => {
-            td.style.color = '#fff';
-            td.style.boxShadow = 'inset 0 0 0 3px #fff';
-        });
-        keyboardButtons.forEach(button => {
-            button.style.color = '#fff';
-            button.style.backgroundColor = '#110644';
-            button.style.border = '2px solid #fff';
-        });
-        document.querySelector('html').style.backgroundImage = "url('images/night.png')";
+        document.documentElement.classList.add('dark');
         imgTheme.src = 'images/moon.svg';
-        SAC_TEXT.style.color = '#fff';
-        OPTIONS_TEXT.style.color = '#fff';
-    } else {
-        keyboardButtons.forEach(button => {
-            button.style.color = '#000';
-            button.style.backgroundColor = '#fff';
-            button.style.border = '2px solid #000';
-        });
     }
 
     initVirtualKeyboard();
