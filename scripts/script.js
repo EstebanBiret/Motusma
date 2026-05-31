@@ -22,8 +22,10 @@ const journeyStart    = document.getElementById('journey-start');
 const stats            = document.getElementById('stats');
 const resultsPokemon  = document.getElementById('results-pokemon');
 const pseudoForm       = document.getElementById('pseudo-form');
-const SPAN_FOUND       = document.querySelector('#found span');
-const SPAN_CATCH       = document.querySelector('#catch span');
+const SPAN_FOUND       = document.querySelector('#found .card-number');
+const SPAN_CATCH       = document.querySelector('#catch .card-number');
+const TOTAL_FOUND      = document.querySelector('#found .card-total');
+const TOTAL_CATCH      = document.querySelector('#catch .card-total');
 const PSEUDO_OVERLAY   = document.getElementById('pseudo-overlay');
 const RESULTS_OVERLAY  = document.getElementById('results-overlay');
 const STATS_OVERLAY    = document.getElementById('stats-overlay');
@@ -253,8 +255,8 @@ function justFinishedGame(hasWon, attemptCount) {
         lose(targetPokemon);
     }
 
-    SPAN_FOUND.textContent = getNbFound() + '/' + MAX_POKEMON;
-    if (hasWon) SPAN_CATCH.textContent = getNbCatch() + '/' + MAX_POKEMON;
+    SPAN_FOUND.textContent = getNbFound();
+    if (hasWon) SPAN_CATCH.textContent = getNbCatch();
 }
 
 function setFirstRow() {
@@ -739,8 +741,10 @@ Promise.all([loadPokemonDb(), loadMotsValides()]).then(([data]) => {
         openHelp();
     }
 
-    SPAN_FOUND.textContent = getNbFound() + '/' + MAX_POKEMON;
-    SPAN_CATCH.textContent = getNbCatch() + '/' + MAX_POKEMON;
+    SPAN_FOUND.textContent = getNbFound();
+    SPAN_CATCH.textContent = getNbCatch();
+    TOTAL_FOUND.textContent = '/' + MAX_POKEMON;
+    TOTAL_CATCH.textContent = '/' + MAX_POKEMON;
 
     pseudo.textContent = getMotusmaInfoField('pseudo');
     journeyStart.textContent = getMotusmaInfoField('startJourney');

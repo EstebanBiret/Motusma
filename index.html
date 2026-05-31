@@ -18,7 +18,7 @@
       <meta name="twitter:description" content="Devine le Pokémon du jour en 5 essais. Motus + Wordle, version Pokémon !">
       <meta name="twitter:image" content="https://motusma.biret-toscano.fr/assets/images/logo.png">
 
-      <link rel="stylesheet" href="styles.css?v=13">
+      <link rel="stylesheet" href="styles.css?v=14">
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       <link rel="icon" href="assets/images/motisma.png" type="image/x-icon">
   </head>
@@ -136,25 +136,41 @@
     <div id="stats-overlay" class="overlay"></div>
     <div id="stats">
       <div id="close-stats" onclick="closeStats()">X</div>
-      <div id="pseudo-container">
-        Pseudo : <p id="pseudo"></p>
-        <button id="change-pseudo" onclick="openPseudo()">Changer de pseudo</button>
+      <h2 class="modal-title">Profil du Dresseur</h2>
+
+      <div class="profile-row pseudo-row">
+        <span class="field-label">Pseudo</span>
+        <span class="field-value" id="pseudo"></span>
+        <button id="change-pseudo" onclick="openPseudo()">Changer</button>
       </div>
-      <div id="date-container">
-        Début de l'aventure : <p id="journey-start">-</p>
+      <div class="profile-row">
+        <span class="field-label">Début de l'aventure</span>
+        <span class="field-value" id="journey-start">-</span>
       </div>
-      <div id="container-found-catch">
-        <div id="found">Pokémon vus : <span>0</span></div>
-        <div id="catch">Pokémon attrapés : <span>0</span></div>
+
+      <div class="pokedex-cards">
+        <div class="pdx-card" id="found">
+          <span class="card-label">Pokémon vus</span>
+          <div class="card-value"><span class="card-number">0</span><span class="card-total">/151</span></div>
+        </div>
+        <div class="pdx-card" id="catch">
+          <span class="card-label">Pokémon attrapés</span>
+          <div class="card-value"><span class="card-number">0</span><span class="card-total">/151</span></div>
+        </div>
       </div>
-      <div id="chart">
-        <canvas id="attemptsChart"></canvas>
+
+      <div class="chart-section">
+        <h3 class="chart-title">Répartition par nombre d'essais</h3>
+        <div id="chart">
+          <canvas id="attemptsChart"></canvas>
+        </div>
       </div>
     </div>
 
     <div id="pseudo-overlay" class="overlay"></div>
     <div id="pseudo-form" style="display: none;">
       <div id="close-pseudo" onClick="closePseudo()">X</div>
+      <h2 class="modal-title">Changer de pseudo</h2>
       <form onsubmit="newPseudo(event)" id="input-change-pseudo">
         <input type="text" id="pseudo-input" value="" maxlength="20">
         <button type="submit">Valider</button>
@@ -195,7 +211,7 @@
     </div>
 
     <script src="scripts/utils.js?v=3"></script>
-    <script src="scripts/script.js?v=18"></script>
+    <script src="scripts/script.js?v=19"></script>
     <script src="scripts/countdown.js"></script>
     <script src="scripts/chart.js?v=5"></script>
 
