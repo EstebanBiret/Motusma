@@ -1,15 +1,16 @@
 let currentPokemonId = null;
 let flavorText;
+let pokemonDb = null;
 
-document.addEventListener("DOMContentLoaded", () => {
-  const MAX_POKEMONS = 151;
+document.addEventListener("DOMContentLoaded", async () => {
   const pokemonID = new URLSearchParams(window.location.search).get("id");
   const id = parseInt(pokemonID, 10);
 
-  if (id < 1 || id > MAX_POKEMONS) {
+  if (id < 1 || id > MAX_POKEMON) {
     return (window.location.href = "./index.html");
   }
 
+  pokemonDb = await loadPokemonDb();
   currentPokemonId = id;
   loadPokemon(id);
 });
@@ -51,7 +52,7 @@ async function loadPokemon(id) {
 
     return true;
   } catch (error) {
-    console.error("Une erreur d'amour s'est produite ... -->", error);
+    console.error("Error while loading the Pokémon:", error);
     window.location.href = "index.html";
     return false;
   }
@@ -60,12 +61,6 @@ async function loadPokemon(id) {
 async function navigatePokemon(id) {
   currentPokemonId = id;
   await loadPokemon(id);
-}
-
-function formatDate(dateString) {
-  const options = { day: 'numeric', month: 'long', year: 'numeric' };
-  const date = new Date(dateString);
-  return date.toLocaleDateString('fr-FR', options);
 }
 
 const typeColors = {
@@ -89,7 +84,7 @@ const typeColors = {
   fairy: "#fc92c3"
 };
 
-const typeTrad = {
+const TYPE_NAMES_FR = {
   normal: "normal",
   fire: "feu",
   water: "eau",
@@ -190,7 +185,7 @@ function displayPokemonDetails(pokemon) {
   if (encountered) {
 
     const { name, id, types, weight, height, stats } = pokemon;
-    const capitalizePokemonName = POKEMON_NAMES_FR[capitalize(name)];
+    const capitalizePokemonName = frenchNameById(pokemonDb, id);
     document.querySelector("title").textContent = capitalizePokemonName;
 
     const detailMainElement = document.querySelector(".detail-main");
@@ -203,7 +198,7 @@ function displayPokemonDetails(pokemon) {
     ).textContent = `#${String(id).padStart(3, "0")}`;
 
     const imageElement = document.querySelector(".detail-img-wrapper img");
-    imageElement.src = `sprites/${id}.svg`;
+    imageElement.src = `assets/sprites/${id}.svg`;
     imageElement.alt = capitalizePokemonName;
 
     const typeWrapper = document.querySelector(".power-wrapper");
@@ -211,15 +206,15 @@ function displayPokemonDetails(pokemon) {
     types.forEach(({ type }) => {
       createAndAppendElement(typeWrapper, "p", {
         className: `body3-fonts type ${type.name}`,
-        textContent: typeTrad[type.name],
+        textContent: TYPE_NAMES_FR[type.name],
       });
     });
 
     if(encountered.catch) {
-      document.querySelector(".captureInfos").textContent = 'Capturé le ' + formatDate(encountered.date) + ' en ' + encountered.tries + ' essai.s !';
+      document.querySelector(".captureInfos").textContent = 'Capturé le ' + formatFrenchDate(encountered.date) + ' en ' + encountered.tries + ' essai.s !';
     }
     else {
-      document.querySelector(".captureInfos").textContent = 'Rencontré le ' + formatDate(encountered.date);
+      document.querySelector(".captureInfos").textContent = 'Rencontré le ' + formatFrenchDate(encountered.date);
     }
 
 
@@ -274,7 +269,7 @@ function displayPokemonDetails(pokemon) {
     ).textContent = `#${String(currentPokemonId).padStart(3, "0")}`;
     
     const imageElement = document.querySelector(".detail-img-wrapper img");
-    imageElement.src = "images/not-found.svg";
+    imageElement.src = "assets/images/not-found.svg";
     imageElement.alt = "Pas rencontré";
     document.querySelector(".power-wrapper").innerHTML = "";
     document.querySelector(".captureInfos").innerHTML = "";

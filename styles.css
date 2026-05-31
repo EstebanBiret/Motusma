@@ -1,6 +1,6 @@
 @font-face {
   font-family: pokemon;
-  src: url("fonts/PokemonClassic.ttf") format("truetype");
+  src: url("assets/fonts/PokemonClassic.ttf") format("truetype");
   font-display: swap;
 }
 
@@ -55,7 +55,7 @@ html.dark {
   --keyboard-color:   var(--white);
   --keyboard-border:  2px solid var(--white);
   --bag-text-color:   var(--white);
-  background-image: url(images/night.png);
+  background-image: url(assets/images/night.png);
 }
 
 * {
@@ -73,7 +73,7 @@ html.dark {
 }
 
 html {
-  background-image: url(images/day.png);
+  background-image: url(assets/images/day.png);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -292,7 +292,7 @@ td {
   #navbar { padding: 6px 8px; }
 }
 
-#help, #stats, #results, #form-changer-pseudo {
+#help, #stats, #results, #pseudo-form {
   position: fixed;
   left: 50%;
   top: 50%;
@@ -317,7 +317,7 @@ td {
 }
 
 #help, #stats { display: none; }
-#results, #form-changer-pseudo { display: flex; }
+#results, #pseudo-form { display: flex; }
 
 #close-stats,
 #close-pseudo,
@@ -388,7 +388,7 @@ td {
 #pseudo-container p,
 #date-container p { margin: 0; }
 
-#changer-pseudo {
+#change-pseudo {
   font-size: clamp(10px, 1.4vw, 13px);
 }
 
@@ -406,7 +406,7 @@ td {
   #container-found-catch { gap: 6px; flex-direction: column; }
 }
 
-#form-changer-pseudo {
+#pseudo-form {
   max-width: 450px;
   align-items: center;
   justify-content: center;
@@ -438,7 +438,7 @@ td {
   text-align: center;
 }
 
-#results-titre { font-size: clamp(16px, 2.6vw, 24px); margin: 6px 0; }
+#results-title { font-size: clamp(16px, 2.6vw, 24px); margin: 6px 0; }
 #results-text  { text-align: center; margin-bottom: 6px; }
 
 #results-pokemon {
@@ -505,7 +505,7 @@ hr {
   font-size: clamp(10px, 1.5vw, 14px);
 }
 
-#mot-invalide {
+#invalid-word {
   position: fixed;
   left: 50%;
   bottom: -8em;           
@@ -524,7 +524,7 @@ hr {
   transition: bottom .7s ease-in-out, visibility .7s, opacity .3s;
 }
 
-#mot-invalide p { margin: 0; }
+#invalid-word p { margin: 0; }
 
 .notification {
   position: fixed;

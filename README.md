@@ -37,4 +37,38 @@ Retrouve chaque jour un nouveau Pokémon de la première génération à deviner
 
 - HTML / CSS / JavaScript
 - Stockage via `localStorage` et `cookies`
-- PokéAPI
+- [PokéAPI](https://pokeapi.co) pour les détails enrichis du Pokédex
+
+---
+
+## 📂 Architecture du projet
+
+```
+.
+├── index.html             # Page principale du jeu
+├── pokedex.html           # Liste des Pokémon
+├── detail.html            # Fiche détaillée d'un Pokémon
+├── styles.css             # Styles (avec variables CSS + thème sombre)
+├── assets/
+│   ├── fonts/             # Police Pokémon
+│   ├── images/            # Icônes et visuels de l'interface
+│   ├── sounds/            # Musique d'ambiance
+│   └── sprites/           # Sprites des 151 Pokémon (par id)
+├── data/
+│   ├── bd.json            # Base de données des Pokémon (noms, types, stats)
+│   └── motsValides.json   # Dictionnaire des mots français acceptés
+└── scripts/
+    ├── utils.js           # Constantes et helpers partagés
+    ├── script.js          # Logique principale du jeu
+    ├── pokemon.js         # Page liste du Pokédex
+    ├── pokemon-detail.js  # Page détail d'un Pokémon
+    ├── chart.js           # Graphique des statistiques
+    └── countdown.js       # Compte à rebours du prochain Pokémon
+```
+
+Le Pokémon du jour est déterminé par un hash de la date, ce qui garantit
+que tous les joueurs ont le même Pokémon le même jour. La progression
+(Pokémon vus/attrapés, statistiques) est sauvegardée localement dans le
+navigateur. `bd.json` sert de source unique pour les noms et types ;
+PokéAPI n'est utilisé que sur la page détail pour la description et les
+mesures (taille/poids).

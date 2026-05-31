@@ -1,27 +1,27 @@
-let essaisChart;
+let attemptsChart;
 
-function updateEssaisChart() {
+function updateAttemptsChart() {
     const userData = JSON.parse(localStorage.getItem(STORAGE_KEYS.DATA)) || {};
 
-    const essaisCounts = [0, 0, 0, 0, 0, 0];
+    const attemptCounts = [0, 0, 0, 0, 0, 0];
     for (const key in userData) {
-        const essais = userData[key].tries;
-        if (essais >= 1 && essais <= 5) {
-            essaisCounts[essais - 1]++;
+        const attempts = userData[key].tries;
+        if (attempts >= 1 && attempts <= 5) {
+            attemptCounts[attempts - 1]++;
         } else {
-            essaisCounts[5]++;
+            attemptCounts[5]++;
         }
     }
 
-    if (essaisChart) {
-        essaisChart.data.datasets[0].data = essaisCounts;
-        essaisChart.update();
+    if (attemptsChart) {
+        attemptsChart.data.datasets[0].data = attemptCounts;
+        attemptsChart.update();
     } else {
         const data = {
             labels: ["1", "2", "3", "4", "5", "Perdu"],
             datasets: [{
                 label: 'Nombre de Pokémon',
-                data: essaisCounts,
+                data: attemptCounts,
             }]
         };
 
@@ -52,12 +52,12 @@ function updateEssaisChart() {
             }
         };
 
-        essaisChart = new Chart(
-            document.getElementById('essaisChart'),
+        attemptsChart = new Chart(
+            document.getElementById('attemptsChart'),
             config
         );
     }
 }
 
-updateEssaisChart();
-window.updateEssaisChart = updateEssaisChart;
+updateAttemptsChart();
+window.updateAttemptsChart = updateAttemptsChart;

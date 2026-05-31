@@ -4,31 +4,31 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Motusma</title>
-      <link rel="stylesheet" href="styles.css?v=11">
+      <link rel="stylesheet" href="styles.css?v=12">
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-      <link rel="icon" href="images/motisma.png" type="image/x-icon">
+      <link rel="icon" href="assets/images/motisma.png" type="image/x-icon">
   </head>
   <body>
 
-    <div id="mot-invalide"><p>Ce mot n'existe pas, dresseur !</p></div>
+    <div id="invalid-word"><p>Ce mot n'existe pas, dresseur !</p></div>
 
     <div id="logo">
-      <img src="images/logo.png" alt="Logo" id="logo-img">
+      <img src="assets/images/logo.png" alt="Logo" id="logo-img">
     </div>
 
     <div id="navbar">
       <div class="left-items">
         <div id="left-title">Sac</div>
         <div class="bag">
-          <img src="images/pokedex.png" id="img-open" alt="Pokédex" class="tooltip-trigger" data-tooltip="Pokédex" onclick="openPokedex()">
+          <img src="assets/images/pokedex.png" id="img-open" alt="Pokédex" class="tooltip-trigger" data-tooltip="Pokédex" onclick="openPokedex()">
           <div class="tooltip" aria-hidden="true">
             <div class="tooltip-inner"></div>
           </div>
-          <img src="images/stats.png" id="img-stats" alt="Stats" class="tooltip-trigger" data-tooltip="Statistiques" onclick="openStats()">
+          <img src="assets/images/stats.png" id="img-stats" alt="Stats" class="tooltip-trigger" data-tooltip="Statistiques" onclick="openStats()">
           <div class="tooltip" aria-hidden="true">
             <div class="tooltip-inner"></div>
           </div>
-          <img src="images/pokeball.png" id="pokeball-results" alt="Pokeball" class="tooltip-trigger disabled" data-tooltip="Résultat" onclick="openResults()">
+          <img src="assets/images/pokeball.png" id="pokeball-results" alt="Pokeball" class="tooltip-trigger disabled" data-tooltip="Résultat" onclick="openResults()">
           <div class="tooltip" aria-hidden="true">
             <div class="tooltip-inner"></div>
           </div>
@@ -37,15 +37,15 @@
       <div class="right-items">
         <div id="right-title">Options</div>
         <div class="bag">
-          <img src="images/help.svg" id="img-help" alt="Help" class="tooltip-trigger" data-tooltip="Comment jouer ?" onclick="openHelp()">
+          <img src="assets/images/help.svg" id="img-help" alt="Help" class="tooltip-trigger" data-tooltip="Comment jouer ?" onclick="openHelp()">
           <div class="tooltip" aria-hidden="true">
             <div class="tooltip-inner"></div>
           </div>
-          <img src="images/no-music.svg" id="img-music" alt="Musique" class="tooltip-trigger" data-tooltip="Musique" onclick="toggleMusic()">
+          <img src="assets/images/no-music.svg" id="img-music" alt="Musique" class="tooltip-trigger" data-tooltip="Musique" onclick="toggleMusic()">
           <div class="tooltip" aria-hidden="true">
             <div class="tooltip-inner"></div>
           </div>
-          <img src="images/sun.svg" id="img-theme" alt="Thème" class="tooltip-trigger" data-tooltip="Thème" onclick="toggleTheme()">
+          <img src="assets/images/sun.svg" id="img-theme" alt="Thème" class="tooltip-trigger" data-tooltip="Thème" onclick="toggleTheme()">
           <div class="tooltip" aria-hidden="true">
             <div class="tooltip-inner"></div>
           </div>
@@ -124,22 +124,22 @@
       <div id="close-stats" onclick="closeStats()">X</div>
       <div id="pseudo-container">
         Pseudo : <p id="pseudo"></p>
-        <button id="changer-pseudo" onclick="openPseudo()">Changer de pseudo</button>
+        <button id="change-pseudo" onclick="openPseudo()">Changer de pseudo</button>
       </div>
       <div id="date-container">
-        Début de l'aventure : <p id="debut-aventure">-</p>
+        Début de l'aventure : <p id="journey-start">-</p>
       </div>
       <div id="container-found-catch">
         <div id="found">Pokémon vus : <span>0</span></div>
         <div id="catch">Pokémon attrapés : <span>0</span></div>
       </div>
       <div id="chart">
-        <canvas id="essaisChart"></canvas>
+        <canvas id="attemptsChart"></canvas>
       </div>
     </div>
 
     <div id="pseudo-overlay" class="overlay"></div>
-    <div id="form-changer-pseudo" style="display: none;">
+    <div id="pseudo-form" style="display: none;">
       <div id="close-pseudo" onClick="closePseudo()">X</div>
       <form onsubmit="newPseudo(event)" id="input-change-pseudo">
         <input type="text" id="pseudo-input" value="" maxlength="20">
@@ -150,11 +150,11 @@
     <div id="results-overlay" class="overlay"></div>
     <div id="results" style="display: none;">
       <div id="close-results" onclick="closeResults()">X</div>
-      <h1 id="results-titre">C'est métaphysique</h1>
+      <h1 id="results-title">C'est métaphysique</h1>
       <div id="results-text">Filou !</div>
-      <img src="/images/motisma.png" alt="Pokémon du jour" id="results-pokemon">
+      <img src="assets/images/motisma.png" alt="Pokémon du jour" id="results-pokemon">
       <div id="share" onclick="share()">Copier le résultat
-        <img src="images/copy.svg" alt="copy" width="28">
+        <img src="assets/images/copy.svg" alt="copy" width="28">
       </div>
       <hr>
       <div id="next">
@@ -180,10 +180,10 @@
       </div>
     </div>
 
-    <script src="scripts/utils.js?v=1"></script>
-    <script src="scripts/script.js?v=15"></script>
+    <script src="scripts/utils.js?v=2"></script>
+    <script src="scripts/script.js?v=16"></script>
     <script src="scripts/countdown.js"></script>
-    <script src="scripts/chart.js?v=4"></script>
+    <script src="scripts/chart.js?v=5"></script>
 
   </body>
 </html>
